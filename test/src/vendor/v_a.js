@@ -1,3 +1,5 @@
+console.log('v_a');
+
 export default () => {
-  console.log('v_a.js');
+  console.log('v_a inner');
 }

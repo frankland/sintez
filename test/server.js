@@ -29,10 +29,3 @@ manager.add(lessWatch)();
 manager.add(staticWatch)();
 
 manager.add(server)();
-
-
-//var webpack = env.getWebpack();
-//var server = webpack.getServer();
-
-//server.setupIndexAsEntry();
-//server.run();?
