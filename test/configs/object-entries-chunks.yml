@@ -5,17 +5,17 @@ webpack:
   output: js/
   chunks: true
   entry:
-    app:
-      - app/a_a.js
-      - app/a_b.js
+    vendor:
+      - vendor/v_a.js
+      - vendor/v_b.js
 
     deps:
       - app/deps/d_a.js
       - app/deps/d_b.js
 
-    vendor:
-      - vendor/v_a.js
-      - vendor/v_b.js
+    app:
+      - app/a_a.js
+      - app/a_b.js
 
   loaders:
     - test: \.js$
