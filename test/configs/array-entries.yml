@@ -1,0 +1,29 @@
+src: test/src/
+dest: test/dest-array-entries/
+
+resources:
+  less:
+    src: css/index.less
+    dest: ui/app.css
+    mask: css/**/*.less
+  favicon:
+    src: favicon.ico
+  html:
+    src: index.jade
+    dest: root/index.html
+  yml:
+    src: configs.yml
+
+webpack:
+  entry:
+    - app/a_a.js
+    - app/a_b.js
+    - app/deps/d_a.js
+    - app/deps/d_b.js
+    - vendor/v_a.js
+    - vendor/v_b.js
+
+
+  loaders:
+    - test: \.js$
+      loader: babel-loader
