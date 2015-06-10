@@ -23,18 +23,19 @@ export default class Chunks {
     var chunkPlugin = null;
 
     if (chunks && !isEmpty(entries) && !isArray(entries)) {
-      var list = null;
-      var isArrayMode = isArray(entries);
+      var list  = Object.keys(entries).reverse().slice(1);
 
-      if (isArrayMode) {
-        list = entries;
-      } else {
-        list = Object.keys(entries);
-      }
+      //var isArrayMode = isArray(entries);
+
+      //if (isArrayMode) {
+      //  list = entries;
+      //} else {
+
+      //}
 
       chunkPlugin = new CommonsChunkPlugin({
-        name: list,
-        minChunks: Infinity
+        name: list
+        //minChunks: Infinity
       });
     }
 

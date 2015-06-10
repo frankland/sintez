@@ -37,7 +37,7 @@ describe('Output scripts', () => {
     var webpack = envEntriesAsObject.getWebpack();
 
     expect(webpack.getOutputScripts()).to.eql([
-      '/build.js'
+      '/js/build.js'
     ]);
   });
 });

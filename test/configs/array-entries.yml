@@ -16,12 +16,13 @@ resources:
 
 webpack:
   entry:
-    - app/a_a.js
-    - app/a_b.js
-    - app/deps/d_a.js
-    - app/deps/d_b.js
     - vendor/v_a.js
     - vendor/v_b.js
+    - app/deps/d_a.js
+    - app/deps/d_b.js
+    - app/a_a.js
+    - app/a_b.js
+
 
 
   loaders:

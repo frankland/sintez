@@ -2,6 +2,7 @@ import isArray from 'lodash/lang/isArray';
 import isObject from 'lodash/lang/isObject';
 import isEmpty from 'lodash/lang/isEmpty';
 
+
 import values from 'lodash/object/values';
 import flatten from 'lodash/array/flatten';
 
@@ -46,9 +47,9 @@ export default class Entry {
       var isArrayMode = isArray(entries);
 
       if (isArrayMode) {
-        list = entries;
+        list = entries.reverse();
       } else {
-        list = Object.keys(entries);
+        list = Object.keys(entries).reverse();
       }
 
       var scripts = {};

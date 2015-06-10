@@ -20,12 +20,14 @@ describe('webpack converters ', () => {
     var converted = Entry.convert(src, entries);
 
     expect(converted).to.eql([
-      './test/src/app/a_a.js',
       './test/src/app/a_b.js',
-      './test/src/app/deps/d_a.js',
+      './test/src/app/a_a.js',
+
       './test/src/app/deps/d_b.js',
-      './test/src/vendor/v_a.js',
-      './test/src/vendor/v_b.js'
+      './test/src/app/deps/d_a.js',
+
+      './test/src/vendor/v_b.js',
+      './test/src/vendor/v_a.js'
     ]);
   });
 
@@ -36,13 +38,13 @@ describe('webpack converters ', () => {
     var converted = Entry.convert(src, entries);
 
     expect(converted).to.eql({
-      app: [
-        './test/src/app/a_a.js',
-        './test/src/app/a_b.js'
-      ],
       deps: [
         './test/src/app/deps/d_a.js',
         './test/src/app/deps/d_b.js'
+      ],
+      app: [
+        './test/src/app/a_a.js',
+        './test/src/app/a_b.js'
       ],
       vendor: [
         './test/src/vendor/v_a.js',
@@ -61,8 +63,7 @@ describe('webpack converters ', () => {
 
     expect(converted).to.eql({
       filename: '[name].js',
-      path: resolve('./test/dest-array-entries'),
-      urlBase: '/'
+      path: resolve('./test/dest-array-entries')
     });
   });
 
@@ -76,8 +77,7 @@ describe('webpack converters ', () => {
 
     expect(converted).to.eql({
       filename: 'build.js',
-      path: resolve('./test/dest-array-entries'),
-      urlBase: '/'
+      path: resolve('./test/dest-array-entries')
     });
   });
 });

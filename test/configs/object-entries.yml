@@ -29,6 +29,7 @@ copy:
 
 webpack:
   output: js/
+
   entry:
     vendor:
       - vendor/v_a.js

@@ -22,7 +22,7 @@ import WebpackLogPlugin from './webpack-log-plugin';
 var local = {
   initialConfig: Symbol('initial-config'),
   processedConfig: Symbol('processed-config'),
-  //instance: Symbol('webpack-instance'),
+  instance: Symbol('webpack-instance'),
   //src: Symbol('src'),
   //dest: Symbol('dest'),
   env: Symbol('environment')
@@ -68,9 +68,8 @@ export default class SintezWebpack {
     // plugins
     var optimize = Optimize.convert(webpackConfig.optimize);
     var shim = Shim.convert(webpackConfig.shim);
-    var chunks = Chunks.convert(webpackConfig.chunks, webpackConfig.entry);
-
-
+    var chunks = Chunks.convert(webpackConfig.chunks, entry);
+    
     var config  = {
       //context,
       bail,
@@ -121,13 +120,13 @@ export default class SintezWebpack {
     return Webpack(config);
   }
 
-  //getInstance() {
-  //  if (!this[local.instance]) {
-  //    this[local.instance] = this.createInstance();
-  //  }
-  //
-  //  return this[local.instance];
-  //}
+  getInstance() {
+    if (!this[local.instance]) {
+      this[local.instance] = this.createInstance();
+    }
+
+    return this[local.instance];
+  }
 
   getInitialConfig() {
     return cloneDeep(this[local.initialConfig]);

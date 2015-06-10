@@ -1,7 +1,7 @@
 import isArray from 'lodash/lang/isArray';
 import { join, resolve } from 'path';
 
-var buildName = 'build.js';
+var buildName = 'build';
 
 export default class Output {
   static validate(entries) {
@@ -12,7 +12,7 @@ export default class Output {
   }
 
   static getOutputPath(output) {
-    return join('/', output || '');
+    return output || '';
   }
 
   static getScripts(output, chunks, entries) {
@@ -24,10 +24,10 @@ export default class Output {
         return join('/' + path, script + '.js');
       });
     } else {
-      scripts.push(join('/', buildName));
+      scripts.push(join('/', path, buildName + '.js'));
     }
 
-    return scripts;
+    return scripts.reverse();
   }
 
   static convert(dest, output, chunks, entry) {
@@ -37,7 +37,7 @@ export default class Output {
     if (chunks && !isArray(entry)) {
       filename = '[name].js';
     } else {
-      filename = buildName;
+      filename = buildName + '.js';
     }
 
     return {

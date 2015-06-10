@@ -39,7 +39,7 @@ export default class SintezWebpackServer {
 
     var env = this[local.env];
     var webpack = env.getWebpack();
-    var publicPath = webpack.getOutputPath();
+    var publicPath = join('/', webpack.getOutputPath());
 
     var index = this.getIndexPath();
 
