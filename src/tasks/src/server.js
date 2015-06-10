@@ -1,7 +1,6 @@
 import Base from '../base';
 
 export default class Server extends Base {
-
   getDefaultTaskName() {
     return 'server';
   }

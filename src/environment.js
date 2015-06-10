@@ -73,19 +73,17 @@ export default class Environment {
   }
 
   getDest() {
-    var dest = this.get('dest');
-    return resolve(dest);
+    return this.get('dest');
   }
 
   getSrc() {
-    var src = this.get('src');
-    return resolve(src);
+    return this.get('src');
   }
 
   getResources() {
     if (!this[local.resources]) {
       var src = this.get('src');
-      var dest = this.get('dest');
+      var dest = this.getDest();
       var resourcesConfig = this.get('resources') || {};
 
       this[local.resources] = new Resources(src, dest, resourcesConfig);

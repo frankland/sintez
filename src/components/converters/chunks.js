@@ -3,8 +3,6 @@ import isEmpty from 'lodash/lang/isEmpty';
 
 import ChunkManifest from 'chunk-manifest-webpack-plugin';
 import CommonsChunkPlugin from 'webpack/lib/optimize/CommonsChunkPlugin';
-import { globSync } from 'glob';
-
 
 export default class Chunks {
   static validate(entries) {

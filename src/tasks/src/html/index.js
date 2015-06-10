@@ -29,12 +29,18 @@ export default class HtmlIndex extends Base {
     }
   }
 
+  getName() {
+    var resources = this.getResources();
+    return resources.getDestName('index');
+  }
+
   run() {
     var resources = this.getResources();
 
     var src = resources.getSrc('index');
     var dest = resources.getTarget('index');
-    var name = resources.getDestName('index');
+
+    var name = this.getName();
 
     var options = this.getOptions();
 

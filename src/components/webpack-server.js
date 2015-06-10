@@ -15,25 +15,17 @@ import { join, resolve as res } from 'path';
 import sintez from '../sintez-config';
 
 var local = {
-  instance: Symbol('webpack-instance'),
   server: Symbol('webpack-server'),
-  config: Symbol('webpack-server-config'),
-  src: Symbol('src'),
-  dest: Symbol('dest'),
-  env: Symbol('environmnet')
+  env: Symbol('environmnet'),
+  config: Symbol('config')
 };
 
 
 export default class SintezWebpackServer {
   constructor(env, webpack) {
-    this[local.src] = env.get('src');
-    this[local.dest] = env.get('dest');
-
     this[local.env] = env;
-
-    this[local.instance] = webpack;
-
     this[local.config] = this.getConfig();
+
     this[local.server] = new WebpackDevServer(webpack, this[local.config]);
   }
 
@@ -44,13 +36,16 @@ export default class SintezWebpackServer {
 
   getConfig() {
     var def = this.getDefaults();
-    var env = this[local.env];
 
-    var resources = env.getResources();
-    var index = resources.getRelativeDest('index');
+    var env = this[local.env];
+    var webpack = env.getWebpack();
+    var publicPath = webpack.getOutputPath();
+
+    var index = this.getIndexPath();
 
     return Object.assign({}, def, {
-      contentBase: this[local.dest],
+      contentBase: env.getDest(),
+      publicPath,
       index: index
     });
   }
@@ -60,11 +55,15 @@ export default class SintezWebpackServer {
     return server.app;
   }
 
-  setupIndexAsEntry() {
+  getIndexPath() {
     var env = this[local.env];
-
     var resources = env.getResources();
-    var index = resources.getDest('index');
+
+    return resources.getDest('index');
+  }
+
+  setupIndexAsEntry() {
+    var index = this.getIndexPath();
     var indexFs = resolve(index);
 
     var express = this.express();
@@ -75,8 +74,9 @@ export default class SintezWebpackServer {
 
   run(cb) {
     var config = this[local.config];
+    var server = this[local.server];
 
-    this[local.server].listen(config.port, config.host, () => {
+    server.listen(config.port, config.host, () => {
 
       logger.log(`launched at http://${gutil.colors.green(config.host)}:${gutil.colors.green(config.port)}`);
 

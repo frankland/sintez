@@ -1,5 +1,5 @@
 import { sync as rm } from 'rimraf';
-
+import { resolve } from 'path';
 import Base from '../base';
 
 export default class Server extends Base {
@@ -10,6 +10,6 @@ export default class Server extends Base {
 
   run() {
     var dest = this.env.getDest();
-    rm(dest);
+    rm(resolve(dest));
   }
 }

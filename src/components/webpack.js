@@ -22,10 +22,10 @@ import WebpackLogPlugin from './webpack-log-plugin';
 var local = {
   initialConfig: Symbol('initial-config'),
   processedConfig: Symbol('processed-config'),
-  instance: Symbol('webpack-instance'),
-  src: Symbol('src'),
-  dest: Symbol('dest'),
-  env: Symbol('environmnet')
+  //instance: Symbol('webpack-instance'),
+  //src: Symbol('src'),
+  //dest: Symbol('dest'),
+  env: Symbol('environment')
 };
 
 
@@ -38,9 +38,6 @@ export default class SintezWebpack {
     }
 
     this[local.initialConfig] = webpackConfig;
-    this[local.src] = env.get('src');
-    this[local.dest] = env.get('dest');
-
     this[local.env] = env;
   }
 
@@ -54,9 +51,10 @@ export default class SintezWebpack {
 
   createConfig() {
     var webpackConfig = this[local.initialConfig];
+    var env = this[local.env];
 
-    var src = this[local.src];
-    var dest = this[local.dest];
+    var src = env.get('src');
+    var dest = env.getDest();
 
     var bail = false;
     var devtool = 'source-map';
@@ -72,13 +70,14 @@ export default class SintezWebpack {
     var shim = Shim.convert(webpackConfig.shim);
     var chunks = Chunks.convert(webpackConfig.chunks, webpackConfig.entry);
 
+
     var config  = {
       //context,
       bail,
       devtool,
       output,
       plugins: [],
-      module: {}
+      module: {},
     };
 
     if (resolve) {
@@ -118,16 +117,17 @@ export default class SintezWebpack {
 
   createInstance() {
     var config = this.createConfig();
+
     return Webpack(config);
   }
 
-  getInstance() {
-    if (!this[local.instance]) {
-      this[local.instance] = this.createInstance();
-    }
-
-    return this[local.instance];
-  }
+  //getInstance() {
+  //  if (!this[local.instance]) {
+  //    this[local.instance] = this.createInstance();
+  //  }
+  //
+  //  return this[local.instance];
+  //}
 
   getInitialConfig() {
     return cloneDeep(this[local.initialConfig]);
@@ -135,13 +135,23 @@ export default class SintezWebpack {
 
   getServer() {
     var env = this[local.env];
-    var instance = this.createInstance();
 
-    return new WebpackServer(env, instance);
+    return new WebpackServer(env, this.createInstance());
   }
 
+  getOutputPath() {
+    var webpackConfig = this[local.initialConfig];
+    return Output.getOutputPath(webpackConfig.output);
+  }
 
   getOutputScripts() {
-    return 'NOTHING!!11';
+    var webpackConfig = this[local.initialConfig];
+
+    var env = this[local.env];
+    var src = env.get('src');
+
+    var entry = Entry.convert(src, webpackConfig.entry);
+
+    return Output.getScripts(webpackConfig.output, webpackConfig.chunks, entry);
   }
 }
