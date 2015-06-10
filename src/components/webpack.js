@@ -98,7 +98,7 @@ export default class SintezWebpack {
     }
 
     if (chunks) {
-      config.plugins = config.plugins.concat(chunks);
+      config.plugins.push(chunks);
 
       //var chunkManifest = Chunks.getChunkManifest();
       //config.plugins.push(chunkManifest);

@@ -22,7 +22,7 @@ export default class Chunks {
   }
 
   static convert(chunks, entries) {
-    var chunkPlugins = null;
+    var chunkPlugin = null;
 
     if (chunks && !isEmpty(entries) && !isArray(entries)) {
       var list = null;
@@ -34,25 +34,12 @@ export default class Chunks {
         list = Object.keys(entries);
       }
 
-      var mainBundle = list[list.length - 1];
-
-      chunkPlugins = [new CommonsChunkPlugin({
+      chunkPlugin = new CommonsChunkPlugin({
         name: list,
         minChunks: Infinity
-      })];
-
-      //for (var entry of list) {
-      // // var entry = name; //isArrayMode ? name : entries[name];
-      //
-      //  if (mainBundle !== entry) {
-      //  chunkPlugins.push(new CommonsChunkPlugin({
-      //      name: entry,
-      //      minChunks: Infinity
-      //    }));
-      //  }
-      //}
+      });
     }
 
-    return chunkPlugins;
+    return chunkPlugin;
   }
 }
