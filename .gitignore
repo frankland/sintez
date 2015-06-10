@@ -1,0 +1,7 @@
+.DS_Store
+/.git
+/.idea
+/node_modules
+/test/dest-object-entries
+/test/dest-object-entries-chunks
+/test/dest-array-entries
