@@ -1,15 +1,17 @@
-var Manager = require('../src-native/tasks/manager');
+import gulp from 'gulp';
+
+var Manager = require('../tasks/manager');
 
 var WebpackDevServer = require('webpack-dev-server');
 var join  = require('path').join;
 
-var Environment = require('../src-native/environment');
+var Environment = require('../environment');
 
-var Clear = require('../src-native/tasks/src/clear');
-var HtmlWatch = require('../src-native/tasks/src/html/watch');
-var LessWatch = require('../src-native/tasks/src/less/watch');
-var StaticWatch = require('../src-native/tasks/src/static/watch');
-var Server = require('../src-native/tasks/src/server');
+var Clear = require('../tasks/src/clear');
+var HtmlWatch = require('../tasks/src/html/watch');
+var LessWatch = require('../tasks/src/less/watch');
+var StaticWatch = require('../tasks/src/static/watch');
+var Server = require('../tasks/src/server');
 
 var configObjectEntries = join(__dirname, './configs/object-entries.yml');
 var env = Environment.fromPath(configObjectEntries);
@@ -21,7 +23,7 @@ var staticWatch = new StaticWatch(env);
 var clear = new Clear(env);
 var server = new Server(env);
 
-var manager = new Manager();
+var manager = new Manager(gulp);
 
 manager.add(clear)();
 manager.add(htmlWatch)();

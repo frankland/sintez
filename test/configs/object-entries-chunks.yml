@@ -1,7 +1,7 @@
 src: test/src/
 dest: test/dest-object-entries-chunks/
 
-webpack:
+builder:
   output: js/
   chunks: true
   entry:

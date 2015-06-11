@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { join } from 'path';
 
-import Environment from '../../src/environment';
+import Environment from '../../src/components/environment';
 
 var configArrayEntries = join(__dirname, '../configs/array-entries.yml');
 

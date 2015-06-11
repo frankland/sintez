@@ -4,7 +4,7 @@ import { join } from 'path';
 
 import Base from '../../base';
 
-import helpers from '../../../helpers';
+import helpers from '../../../utils/helpers';
 
 export default class ResourcesInfo extends Base {
 

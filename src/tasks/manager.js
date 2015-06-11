@@ -1,18 +1,20 @@
-import gulp from 'gulp';
-
 import Log from '../components/log';
 
 var logger = new Log('tasks');
 
-export default class TaskManager {
-  constructor() {
+var local = {
+  gulp: Symbol('gulp')
+};
 
+export default class TaskManager {
+  constructor(gulp) {
+    this[local.gulp] = gulp;
   }
 
   add(task, name) {
     var taskName = name || task.getDefaultTaskName();
 
-    gulp.task(taskName, (done) => {
+    this[local.gulp].task(taskName, (done) => {
       if (task.run.length == 1) {
         task.run(done);
       } else {
@@ -32,6 +34,6 @@ export default class TaskManager {
       throw new Error('Can not manually start task because "taskName" is not defined');
     }
 
-    gulp.start(taskName);
+    this[local.gulp].start(taskName);
   }
 }

@@ -1,7 +1,7 @@
 import { resolve, join } from 'path';
 import cloneDeep from 'lodash/lang/cloneDeep';
 
-import { toUnifiedPath } from '../helpers';
+import { toUnifiedPath } from '../utils/helpers';
 
 
 var regs = {

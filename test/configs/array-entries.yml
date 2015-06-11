@@ -14,7 +14,7 @@ resources:
   yml:
     src: configs.yml
 
-webpack:
+builder:
   entry:
     - vendor/v_a.js
     - vendor/v_b.js

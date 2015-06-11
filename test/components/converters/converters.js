@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { join, resolve } from 'path';
 
-import Environment from '../../../src/environment';
+import Environment from '../../../src/components/environment';
 import Entry from '../../../src/components/converters/entry';
 import Output from '../../../src/components/converters/output';
 
@@ -14,8 +14,8 @@ var envEntriesAsObject = Environment.fromPath(configObjectEntries);
 
 describe('webpack converters ', () => {
   it('entries as array', () => {
-    var entries = envArrayEntries.get('webpack.entry');
-    var src = envArrayEntries.get('src');
+    var entries = envArrayEntries.get('builder.entry');
+    var src = envArrayEntries.getSrc();
 
     var converted = Entry.convert(src, entries);
 
@@ -32,8 +32,8 @@ describe('webpack converters ', () => {
   });
 
   it('entries as object', () => {
-    var entries = envEntriesAsObject.get('webpack.entry');
-    var src = envEntriesAsObject.get('src');
+    var entries = envEntriesAsObject.get('builder.entry');
+    var src = envEntriesAsObject.getSrc();
 
     var converted = Entry.convert(src, entries);
 

@@ -12,7 +12,7 @@ import Webpack from 'webpack';
 
 import { join, resolve as res } from 'path';
 
-import sintez from '../sintez-config';
+import sintez from '../configs/sintez-config';
 
 var local = {
   server: Symbol('webpack-server'),

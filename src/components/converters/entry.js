@@ -23,8 +23,12 @@ var collectScripts = (src, paths) => {
       nosort: true
     });
 
-    var processedScripts = collected.map((script) => './' + script);
-    scripts = scripts.concat(processedScripts);
+    if (collected.length) {
+      var processedScripts = collected.map((script) => './' + script);
+      scripts = scripts.concat(processedScripts);
+    } else {
+      console.log('files not found', srcPath);
+    }
   }
 
   return scripts;

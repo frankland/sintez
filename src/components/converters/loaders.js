@@ -1,9 +1,10 @@
 import isArray from 'lodash/lang/isArray';
 
-import { sep } from '../../helpers';
+import { sep } from '../../utils/helpers';
+
 
 export default class Loaders {
-  static validate(loaders) {
+  static validate() {
     return {
       isValid: true,
       errors: []

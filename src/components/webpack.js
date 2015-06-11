@@ -7,7 +7,7 @@ import cloneDeep from 'lodash/lang/cloneDeep';
 
 import WebpackServer from './webpack-server';
 
-import sintez from '../sintez-config';
+import sintez from '../configs/sintez-config';
 
 import Loaders from './converters/loaders';
 import Entry from './converters/entry';
@@ -76,11 +76,11 @@ export default class SintezWebpack {
       devtool,
       output,
       plugins: [],
-      module: {},
+      module: {}
     };
 
     if (resolve) {
-      config.resolve = entry;
+      config.resolve = resolve;
     }
 
     if (entry) {

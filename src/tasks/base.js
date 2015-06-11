@@ -1,4 +1,4 @@
-import Environment from '../environment';
+import Environment from '../components/environment';
 import WrongEnvironmentInstance from './wrong-environment-instance';
 
 export default class TaskBase {

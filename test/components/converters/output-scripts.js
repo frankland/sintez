@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { join, resolve } from 'path';
 
-import Environment from '../../../src/environment';
+import Environment from '../../../src/components/environment';
 import Entry from '../../../src/components/converters/entry';
 import Output from '../../../src/components/converters/output';
 
