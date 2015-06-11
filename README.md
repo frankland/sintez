@@ -6,4 +6,5 @@ Sintez
 - [ ] Environment config validation
 - [ ] Webpack config validation (apply for each webpack converter)
 - [ ] Add more tests
-
+- [ ] config extending
+- [ ] redev converters!!
