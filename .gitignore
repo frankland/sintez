@@ -5,4 +5,9 @@
 /test/dest-object-entries
 /test/dest-object-entries-chunks
 /test/dest-array-entries
-/src-native
+
+/index.js
+/components
+/configs
+/tasks
+/utils

@@ -3,10 +3,13 @@
   "version": "0.0.0",
   "description": "Enchanted gulp tasks",
   "main": "index.js",
+  "directories": {
+    "lib": "./src-native/"
+  },
   "scripts": {
     "test": "mocha test/index.js --compilers js:babel/register",
     "server": "npm run prepublish && node ./test/server.js",
-    "prepublish": "./node_modules/.bin/rimraf ./src-native && ./node_modules/.bin/babel -d ./src-native ./src"
+    "prepublish": "./node_modules/.bin/babel -d ./ ./src"
   },
   "repository": {
     "type": "git",
@@ -36,12 +39,15 @@
     "gulp-less": "^3.0.3",
     "gulp-rename": "^1.2.2",
     "gulp-util": "^3.0.5",
+    "html-loader": "^0.3.0",
     "js-yaml": "^3.3.1",
+    "json-loader": "^0.5.2",
     "lodash": "^3.9.3",
     "merge-stream": "^0.1.7",
     "node-libs-browser": "^0.5.2",
     "webpack": "^1.9.10",
     "webpack-dev-server": "^1.9.0",
+    "yaml-loader": "^0.1.0",
     "yargs": "^3.10.0"
   },
   "devDependencies": {
