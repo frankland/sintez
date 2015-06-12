@@ -1,6 +1,7 @@
 .DS_Store
 /.git
 /.idea
+/npm-debug.log
 /node_modules
 /test/dest-object-entries
 /test/dest-object-entries-chunks
