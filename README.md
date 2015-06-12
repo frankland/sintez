@@ -8,3 +8,5 @@ Sintez
 - [ ] Add more tests
 - [ ] config extending
 - [ ] redev converters!!
+- [ ] sintez config extending
+- [ ] process sintez config to builder and server config
