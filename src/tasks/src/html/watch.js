@@ -2,7 +2,7 @@ import gulp from 'gulp';
 import HtmlIndex from './index';
 
 
-import Base from '../../base';
+import Base from '../../base-task';
 
 var defaultTaskName = 'html:watch';
 

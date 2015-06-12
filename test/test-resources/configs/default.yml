@@ -1,0 +1,55 @@
+src: test/test-resources/src/
+dest: test/test-resources/dest/default/
+
+
+resources:
+  index:
+    src: index.html
+
+  less:
+    mask: less/**/*.less
+    dest: ui/index.css
+
+  favicon:
+    src: favicon.ico
+
+  assets:
+    mask: assets/**/*
+    dest: assets/
+
+  specific-image:
+    src: assets/1.png
+    dest: my-logo.png
+
+copy:
+  - favicon
+  - assets
+  - specific-image
+
+
+output: js/sintez-build.js
+
+entry:
+  js/vendor:
+    - vendor/v_a.js
+    - vendor/v_b.js
+    - events
+
+  js/deps:
+    - app/deps/d_a.js
+    - app/deps/d_b.js
+
+  js/app:
+    - app/a_a.js
+    - app/a_b.js
+
+aliases:
+  yo: events
+  A: app/a_a
+
+resolve:
+  - bower_components
+
+loaders:
+  babel: .js$
+

@@ -1,5 +1,5 @@
 import pretty from 'prettyjson';
-import Base from '../../base';
+import Base from '../../base-task';
 
 export default class WebpackServerInfo extends Base {
   getWebpackInstance() {

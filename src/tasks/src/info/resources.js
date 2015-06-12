@@ -2,7 +2,7 @@ import Table from 'cli-table';
 import gutil from 'gulp-util';
 import { join } from 'path';
 
-import Base from '../../base';
+import Base from '../../base-task';
 
 import helpers from '../../../utils/helpers';
 

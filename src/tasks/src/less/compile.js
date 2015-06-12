@@ -8,7 +8,7 @@ import gutil from 'gulp-util';
 import { less as logger } from '../../../components/log';
 
 
-import Base from '../../base';
+import Base from '../../base-task';
 
 export default class LessCompile extends Base {
   getDefaultTaskName() {

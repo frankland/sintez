@@ -7,7 +7,7 @@ import gutil from 'gulp-util';
 
 import { html as logger } from '../../../components/log';
 
-import Base from '../../base';
+import Base from '../../base-task';
 
 export default class HtmlIndex extends Base {
 

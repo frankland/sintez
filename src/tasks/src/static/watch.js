@@ -1,7 +1,7 @@
 import gulp from 'gulp';
 import StaticCopy from './copy';
 
-import Base from '../../base';
+import Base from '../../base-task';
 
 export default class StaticWatch extends Base {
   constructor(env) {

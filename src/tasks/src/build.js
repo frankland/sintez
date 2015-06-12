@@ -1,4 +1,4 @@
-import Base from '../base';
+import Base from '../base-task';
 
 export default class Build extends Base {
 

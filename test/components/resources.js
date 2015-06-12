@@ -1,106 +1,100 @@
 import { expect } from 'chai';
-import { join } from 'path';
 
-import Environment from '../../src/components/environment';
+import sintez from '../test-resources/test-sintez';
 
-var configArrayEntries = join(__dirname, '../configs/array-entries.yml');
-
-
-var env = Environment.fromPath(configArrayEntries);
-var resources = env.getResources();
+var resources = sintez.getResources();
 
 
-
-describe('resources', () => {
-  it('get resource', () => {
+describe('Resources component', () => {
+  it('should return or throw error if resource does not exists', () => {
     expect(resources.getResource('less')).to.be.an('object');
     expect(() => resources.getResource('x')).to.throw(Error);
   });
 
-  it('has destination', () => {
+  it('should has destination', () => {
     expect(resources.hasDest('less')).to.be.equal(true);
     expect(resources.hasDest('favicon')).to.be.equal(true);
-    expect(resources.hasDest('html')).to.be.equal(true);
-    expect(resources.hasDest('yml')).to.be.equal(true);
+    expect(resources.hasDest('index')).to.be.equal(true);
   });
 
-  it('get relative destination', () => {
-    expect(resources.getRelativeDest('less')).to.be.equal('ui/app.css');
+  it('should return relative destination', () => {
+    expect(resources.getRelativeDest('less')).to.be.equal('ui/index.css');
     expect(resources.getRelativeDest('favicon')).to.be.equal('favicon.ico');
-    expect(resources.getRelativeDest('html')).to.be.equal('root/index.html');
+    expect(resources.getRelativeDest('index')).to.be.equal('index.html');
   });
 
-  it('get destination', () => {
-    expect(resources.getDest('less')).to.be.equal('test/dest-array-entries/ui/app.css');
-    expect(resources.getDest('favicon')).to.be.equal('test/dest-array-entries/favicon.ico');
-    expect(resources.getDest('html')).to.be.equal('test/dest-array-entries/root/index.html');
+  it('should return destination', () => {
+    expect(resources.getDest('less')).to.be.equal('test/test-resources/dest/default/ui/index.css');
+    expect(resources.getDest('favicon')).to.be.equal('test/test-resources/dest/default/favicon.ico');
+    expect(resources.getDest('index')).to.be.equal('test/test-resources/dest/default/index.html');
   });
 
-  it('get relative target', () => {
+  it('should return relative target', () => {
     expect(resources.getRelativeTarget('less')).to.be.equal('ui/');
     expect(resources.getRelativeTarget('favicon')).to.be.equal('');
-    expect(resources.getRelativeTarget('html')).to.be.equal('root/');
+    expect(resources.getRelativeTarget('index')).to.be.equal('');
   });
 
-  it('get target', () => {
-    expect(resources.getTarget('less')).to.be.equal('test/dest-array-entries/ui/');
-    expect(resources.getTarget('favicon')).to.be.equal('test/dest-array-entries/');
-    expect(resources.getTarget('html')).to.be.equal('test/dest-array-entries/root/');
+  it('should return target', () => {
+    expect(resources.getTarget('less')).to.be.equal('test/test-resources/dest/default/ui/');
+    expect(resources.getTarget('favicon')).to.be.equal('test/test-resources/dest/default/');
+    expect(resources.getTarget('index')).to.be.equal('test/test-resources/dest/default/');
   });
 
-  it('get dest name', () => {
-    expect(resources.getDestName('less')).to.be.equal('app.css');
+  it('should return dest name', () => {
+    expect(resources.getDestName('less')).to.be.equal('index.css');
     expect(resources.getDestName('favicon')).to.be.equal('favicon.ico');
-    expect(resources.getDestName('html')).to.be.equal('index.html');
+    expect(resources.getDestName('index')).to.be.equal('index.html');
+    expect(resources.getDestName('specific-image')).to.be.equal('my-logo.png');
   });
 
   // -----------
-  it('has src', () => {
-    expect(resources.hasSrc('less')).to.be.equal(true);
+  it('should has src', () => {
+    expect(resources.hasSrc('less')).to.be.equal(false);
     expect(resources.hasSrc('favicon')).to.be.equal(true);
-    expect(resources.hasSrc('html')).to.be.equal(true);
+    expect(resources.hasSrc('index')).to.be.equal(true);
   });
 
-  it('get relative src', () => {
-    expect(resources.getRelativeSrc('less')).to.be.equal('css/index.less');
+  it('should return relative src', () => {
+    expect(resources.getRelativeSrc('specific-image')).to.be.equal('assets/1.png');
     expect(resources.getRelativeSrc('favicon')).to.be.equal('favicon.ico');
-    expect(resources.getRelativeSrc('html')).to.be.equal('index.jade');
+    expect(resources.getRelativeSrc('index')).to.be.equal('index.html');
   });
 
-  it('get src', () => {
-    expect(resources.getSrc('less')).to.be.equal('test/src/css/index.less');
-    expect(resources.getSrc('favicon')).to.be.equal('test/src/favicon.ico');
-    expect(resources.getSrc('html')).to.be.equal('test/src/index.jade');
+  it('should return src', () => {
+    expect(resources.getSrc('specific-image')).to.be.equal('test/test-resources/src/assets/1.png');
+    expect(resources.getSrc('favicon')).to.be.equal('test/test-resources/src/favicon.ico');
+    expect(resources.getSrc('index')).to.be.equal('test/test-resources/src/index.html');
   });
 
-  it('get relative location', () => {
-    expect(resources.getRelativeLocation('less')).to.be.equal('css/');
+  it('should return relative location', () => {
+    expect(resources.getRelativeLocation('specific-image')).to.be.equal('assets/');
     expect(resources.getRelativeLocation('favicon')).to.be.equal('');
-    expect(resources.getRelativeLocation('html')).to.be.equal('');
+    expect(resources.getRelativeLocation('index')).to.be.equal('');
   });
 
-  it('get location', () => {
-    expect(resources.getLocation('less')).to.be.equal('test/src/css/');
-    expect(resources.getLocation('favicon')).to.be.equal('test/src/');
-    expect(resources.getLocation('html')).to.be.equal('test/src/');
+  it('should return location', () => {
+    expect(resources.getLocation('specific-image')).to.be.equal('test/test-resources/src/assets/');
+    expect(resources.getLocation('favicon')).to.be.equal('test/test-resources/src/');
+    expect(resources.getLocation('index')).to.be.equal('test/test-resources/src/');
   });
 
-  it('get name', () => {
-    expect(resources.getName('less')).to.be.equal('index.less');
+  it('should return name', () => {
+    expect(resources.getName('specific-image')).to.be.equal('1.png');
     expect(resources.getName('favicon')).to.be.equal('favicon.ico');
-    expect(resources.getName('html')).to.be.equal('index.jade');
+    expect(resources.getName('index')).to.be.equal('index.html');
   });
 
-  it('get mask', () => {
-    expect(resources.getMask('less')).to.be.equal('test/src/css/**/*.less');
-    expect(resources.getMask('favicon')).to.be.equal('test/src/favicon.ico');
-    expect(resources.getMask('html')).to.be.equal('test/src/index.jade');
+  it('should return mask', () => {
+    expect(resources.getMask('less')).to.be.equal('test/test-resources/src/less/**/*.less');
+    expect(resources.getMask('favicon')).to.be.equal('test/test-resources/src/favicon.ico');
+    expect(resources.getMask('index')).to.be.equal('test/test-resources/src/index.html');
   });
 
-  it('get url', () => {
-    expect(resources.getUrl('less')).to.be.equal('/ui/app.css');
+  it('should return url', () => {
+    expect(resources.getUrl('less')).to.be.equal('/ui/index.css');
     expect(resources.getUrl('favicon')).to.be.equal('/favicon.ico');
-    expect(resources.getUrl('html')).to.be.equal('/root/index.html');
+    expect(resources.getUrl('index')).to.be.equal('/index.html');
   });
 });
 

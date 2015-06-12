@@ -1,11 +1,10 @@
 import { resolve } from 'path';
 import { argv } from 'yargs';
 
-import Environment from './components/environment';
-import sintez from './configs/sintez-config';
+import Sintez from './components/sintez';
 
-var configName = sintez.get('env-configs.default-name');
-var cliName = argv[sintez.get('env-configs.cli-arg')];
+var configName = 'sintez';
+var cliName = argv['cong'];
 
 if (cliName) {
   configName = cliName;
@@ -13,4 +12,4 @@ if (cliName) {
 
 var configPath = resolve(`${configName}.yml`);
 
-export default Environment.fromPath(configPath);
+export default Sintez.fromPath(configPath);

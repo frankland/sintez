@@ -1,7 +1,7 @@
 import gulp from 'gulp';
 import LessCompile from './compile';
 
-import Base from '../../base';
+import Base from '../../base-task';
 
 
 export default class LessWatch extends Base {

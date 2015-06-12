@@ -1,13 +1,15 @@
 import log from '../src/components/log';
 log.disable();
 
-import environment from './environment';
-import config from './config';
+import './components/sintez';
+import './components/resources';
 
-import resources from './components/resources';
-import webpack from './components/webpack';
-import entry from './components/converters/converters';
+import './builders/webpack/webpack-builder';
 
-import output from './components/converters/output-scripts';
-
+//import config from './config';
+//
+//import webpack from './components/webpack';
+//import entry from './components/converters/converters';
+//
+//import output from './components/converters/output-scripts';
 

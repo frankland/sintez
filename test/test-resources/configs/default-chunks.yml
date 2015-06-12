@@ -1,0 +1,6 @@
+extend: ./default.yml
+
+dest: test/test-resources/dest/default-chunks/
+
+
+output: null

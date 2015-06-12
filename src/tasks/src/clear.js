@@ -1,6 +1,6 @@
 import { sync as rm } from 'rimraf';
 import { resolve } from 'path';
-import Base from '../base';
+import Base from '../base-task';
 
 export default class Server extends Base {
 

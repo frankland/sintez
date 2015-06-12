@@ -45,6 +45,7 @@
     "lodash": "^3.9.3",
     "merge-stream": "^0.1.7",
     "node-libs-browser": "^0.5.2",
+    "object-description": "0.0.2",
     "webpack": "^1.9.10",
     "webpack-dev-server": "^1.9.0",
     "yaml-loader": "^0.1.0",
