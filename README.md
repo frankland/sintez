@@ -6,7 +6,8 @@ Sintez
 - [ ] Environment config validation
 - [ ] Webpack config validation (apply for each webpack converter)
 - [ ] Add more tests
-- [ ] config extending
-- [ ] redev converters!!
-- [ ] sintez config extending
-- [ ] process sintez config to builder and server config
+- [X] config extending
+- [X] redev converters!!
+- [X] sintez config extending
+- [X] process sintez config to builder and server config
+- [ ] merge user config with default config 
