@@ -9,5 +9,6 @@
 /builders
 /components
 /gulp-tasks
-/server
+/servers
+/utils
 /index.js
