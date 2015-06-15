@@ -27,7 +27,7 @@ export default class LoadersConverter extends BaseConverter {
         var pattern = loaders[loader];
 
         converted.push({
-          test: new RegExp(pattern.replace(/(\*|\/|\.)/g, '\\$1')),
+          test: new RegExp(pattern),
           loader: webpackLoader
         })
       }

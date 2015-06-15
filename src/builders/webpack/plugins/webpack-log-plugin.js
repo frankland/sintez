@@ -1,6 +1,7 @@
 //import gutil from 'gulp-util';
 //import { js as logger } from './log';
 
+import Chunk from 'webpack/lib/Chunk';
 var local = {
   counter: Symbol('counter'),
   lastBuildFailed: Symbol('last-build-failed')
@@ -13,6 +14,36 @@ export default class WebpackLogPlugin {
   }
 
   apply(compiler) {
+
+    //var
+    //compiler.plugin("this-compilation", function(compilation) {
+    //  compilation.plugin(["optimize-chunks", "optimize-extracted-chunks"], (chunks) => {
+    //
+    //    var chunk = new Chunk('yoyoyoyo');
+    //    //chunks.modules = chunks;
+    //
+    //    //compilation.addChunk
+    //
+    //    var modules = [];
+    //    chunks.map(chunk => {
+    //      //var modules = modules.concat(chunk.modules);
+    //      //chunk.modules = [modules[0]]
+    //      //modules = modules.concat(chunk.modules);
+    //      //chunk.modules.map(module => {
+    //      //  chunk.addModule.addModule(module);
+    //      //  //console.log(module.rawRequest);
+    //      //});
+    //
+    //      //console.log(chunk.modules);
+    //      console.log('-----');
+    //    });
+    //
+    //    compilation.chunks = new Chunk('yooo', modules);
+    //
+    //  });
+    //});
+
+
     compiler.plugin('done', (stats) => {
       var counter = this[local.counter]++;
       var isLastBuildFailed = this[local.lastBuildFailed];

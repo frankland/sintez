@@ -4,11 +4,14 @@ import { load as JSONfromYml } from 'js-yaml';
 import { readFileSync, existsSync } from 'fs';
 import { resolve, join, dirname } from 'path';
 
+import ObjectDescription from 'object-description';
+
 import getter from 'lodash/object/get';
 import merge from 'lodash/object/merge';
 
 import Resources from './resoruces';
 import Builder from './builder';
+import Server from './server';
 
 var local = {
   config: Symbol('config'),
@@ -18,27 +21,28 @@ var local = {
 
 
 function getDefaults(src, dest) {
-  return {
-    'server.application': 'webpack-server',
-    'server.port': 9001,
-    'server.livereload': 'localhost',
-    'server.host': 35729,
+  return ObjectDescription.create({
+    'resources': {
+      'index': join(src, '/index.js')
+    },
+    //'server.application': 'webpack-server',
+    //'server.port': 9001,
+    //'server.host': 'localhost',
 
+    'builder': 'webpack',
     'entry.js/index-build': join(src, '/index.js'),
 
     //'output': 'index-build.js',
 
-    'builder': 'webpack',
-    //'chunks': false,
+    'loaders.babel': join(src, '.+\.js$'),
+    'loaders.yml':  join(src, '.+\.yml$'),
+    'loaders.html':  join(src, '.+\.html$'),
+    'loaders.json':  join(src, '.+\.json$'),
 
-    //'builder.include.loaders': ['es6', 'yml', 'html', 'json'],
-    //'builder.include.transpilers': ['es6'],
-
-    'loaders.babel': join(src, '/**/*.js'),
-    'loaders.yml': '.yml$',
-    'loaders.html': '.html$',
-    'loaders.json': '.json$'
-  };
+    'server': 'webpack',
+    'host': 'localhost',
+    'port': 9001
+  });
 }
 
 export default class Sintez {
@@ -101,6 +105,10 @@ export default class Sintez {
     }
   }
 
+  getConfig() {
+    return this[local.config];
+  }
+
   getResources() {
     if (!this[local.resources]) {
       var src = this.getSrc();
@@ -129,6 +137,27 @@ export default class Sintez {
     }
 
     return this[local.builder];
+  }
+
+  getServer() {
+    if (!this[local.server]) {
+      var resources = this.getResources();
+
+      this[local.server] = new Server({
+        builder: this.getBuilder(),
+        server: this.get('server'),
+
+        src: this.getSrc(),
+        dest: this.getDest(),
+
+        host: this.get('host'),
+        port: this.get('port'),
+
+        index: resources.getDest('index')
+      });
+    }
+
+    return this[local.server];
   }
 
   get(key) {

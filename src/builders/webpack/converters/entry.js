@@ -42,6 +42,7 @@ export default class EntryConverter extends BaseConverter {
       scripts[outputEntry] = [];
     }
 
+
     for (var name of Object.keys(entry)) {
       var collected = collectScripts(this.src, entry[name]);
 

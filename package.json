@@ -3,9 +3,6 @@
   "version": "0.0.0",
   "description": "Enchanted gulp tasks",
   "main": "index.js",
-  "directories": {
-    "lib": "./src-native/"
-  },
   "scripts": {
     "test": "mocha test/index.js --compilers js:babel/register",
     "server": "npm run prepublish && node ./test/server.js",
@@ -46,6 +43,8 @@
     "merge-stream": "^0.1.7",
     "node-libs-browser": "^0.5.2",
     "object-description": "0.0.2",
+    "prettyjson": "^1.1.2",
+    "run-sequence": "^1.1.0",
     "webpack": "^1.9.10",
     "webpack-dev-server": "^1.9.0",
     "yaml-loader": "^0.1.0",

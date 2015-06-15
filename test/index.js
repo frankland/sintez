@@ -1,5 +1,5 @@
-import log from '../src/components/log';
-log.disable();
+//import log from '../src/components/log';
+//log.disable();
 
 import './components/sintez';
 import './components/resources';

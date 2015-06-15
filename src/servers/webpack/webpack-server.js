@@ -1,86 +1,77 @@
-import { server as logger } from './log';
+//import { server as logger } from './log';
+//
+//import { resolve } from 'path';
 
-import { resolve } from 'path';
-
-import gutil from 'gulp-util';
+//import gutil from 'gulp-util';
 
 import WebpackDevServer from 'webpack-dev-server';
 
-import isFunction from 'lodash/lang/isFunction';
-import cloneDeep from 'lodash/lang/cloneDeep';
+//import isFunction from 'lodash/lang/isFunction';
+//import cloneDeep from 'lodash/lang/cloneDeep';
 
-import { join, resolve as res } from 'path';
+import { resolve, basename } from 'path';
+//
+//import sintez from '../../configs/sintez-config';
 
-import sintez from '../../configs/sintez-config';
+import BaseServer from '../base-server';
 
 var local = {
   server: Symbol('webpack-server'),
-  env: Symbol('environmnet'),
-  config: Symbol('config')
 };
 
-export default class SintezWebpackServer {
-  constructor(env, webpack) {
-    this[local.env] = env;
-    this[local.config] = this.getConfig();
+export default class WebpackServer extends BaseServer {
+  constructor(config) {
+    super(config);
 
-    this[local.server] = new WebpackDevServer(webpack, this[local.config]);
-  }
-
-  getDefaults() {
-    var config = sintez.get('webpack');
-    return cloneDeep(config);
-  }
-
-  getConfig() {
-    var def = this.getDefaults();
-
-    var env = this[local.env];
-    var webpack = env.getWebpack();
-    var publicPath = join('/', webpack.getOutputPath());
-
-    var index = this.getIndexPath();
-
-    return Object.assign({}, def, {
-      contentBase: env.getDest(),
-      publicPath,
-      index: index
-    });
-  }
-
-  express() {
-    var server = this[local.server];
-    return server.app;
-  }
-
-  getIndexPath() {
-    var env = this[local.env];
-    var resources = env.getResources();
-
-    return resources.getDest('index');
+    // TODO: check builder instance
   }
 
   setupIndexAsEntry() {
-    var index = this.getIndexPath();
-    var indexFs = resolve(index);
+    var server = this[local.server];
 
-    var express = this.express();
-    express.get('*', function(req, res) {
-      res.sendFile(indexFs);
+    var index = this.config.index;
+    var resolvedIndex = resolve(index);
+
+    server.app.get('*', (req, res) => {
+      res.sendFile(resolvedIndex);
     });
   }
 
+  getConfig() {
+    return {
+      contentBase: this.config.dest,
+      quiet: true,
+      noInfo: true,
+      lazy: false,
+      watchDelay: true,
+      headers: {
+        'X-Custom-Header': 'yes'
+      },
+      stats: {
+        colors: true
+      },
+      index: basename(this.config.index)
+    }
+  }
+
+  getInstance() {
+    if (!this[local.server]) {
+      var webpack = this.builder.getInstance();
+      var serverConfig = this.getConfig();
+
+      this[local.server] = new WebpackDevServer(webpack, serverConfig);
+      this.setupIndexAsEntry();
+    }
+
+    return this[local.server];
+  }
+
   run(cb) {
-    var config = this[local.config];
-    var server = this[local.server];
+    var host = this.config.host;
+    var port = this.config.port;
 
-    server.listen(config.port, config.host, () => {
+    var server = this.getInstance();
 
-      logger.log(`launched at http://${gutil.colors.green(config.host)}:${gutil.colors.green(config.port)}`);
-
-      if (isFunction(cb)) {
-        cb();
-      }
-    });
+    server.listen(port, host, cb);
   }
 }

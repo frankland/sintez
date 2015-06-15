@@ -2,8 +2,10 @@ import { join, resolve as res } from 'path';
 
 import Webpack from 'webpack';
 import WebpackLogPlugin from './plugins/webpack-log-plugin';
-
+import WebpackSplitPlugin from './plugins/webpack-split-plugin';
 import CommonsChunkPlugin from 'webpack/lib/optimize/CommonsChunkPlugin';
+//import SplitByNamePlugin from 'split-by-name-webpack-plugin';
+
 
 import BaseBuilder from '../base-builder';
 
@@ -70,8 +72,8 @@ export default class WebpackBuilder extends BaseBuilder {
     if (chunks) {
       config.plugins.push(chunks);
 
-      var chunkManifest = chunksConverter.getChunkManifest();
-      config.plugins.push(chunkManifest);
+      //var chunkManifest = chunksConverter.getChunkManifest();
+      //config.plugins.push(chunkManifest);
     }
 
     if (optimize) {
@@ -82,7 +84,6 @@ export default class WebpackBuilder extends BaseBuilder {
      * console log Plugin. apply "done" and "invalid"
      */
     config.plugins.push(new WebpackLogPlugin());
-
 
     return config;
   }

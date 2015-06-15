@@ -29,7 +29,30 @@ copy:
 
 output: js/sintez-build.js
 
+
+#
+#code-split:
+#  components:
+#    - ../../node_modules
+#    - ../../bower_components
+#  deps: deps/
+#  app: app/
+#
+#
+#entry:
+#  js/vendor:
+#    - vendor/v_a.js
+#    - vendor/v_b.js
+#    - events
+#    - app/deps/d_a.js
+#    - app/deps/d_b.js
+#    - app/a_a.js
+#    - app/a_b.js
+
+
+
 entry:
+#  app-code:
   js/vendor:
     - vendor/v_a.js
     - vendor/v_b.js
@@ -49,7 +72,3 @@ aliases:
 
 resolve:
   - bower_components
-
-loaders:
-  babel: .js$
-
