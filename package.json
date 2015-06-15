@@ -28,7 +28,8 @@
   },
   "homepage": "https://github.com/frankland/sintez#readme",
   "dependencies": {
-    "babel-loader": "^5.1.4",
+    "babel": "^5.4.2",
+    "babel-core": "^5.4.2",
     "cli-table": "^0.3.1",
     "glob": "^5.0.10",
     "gulp": "^3.9.0",
@@ -36,9 +37,7 @@
     "gulp-less": "^3.0.3",
     "gulp-rename": "^1.2.2",
     "gulp-util": "^3.0.5",
-    "html-loader": "^0.3.0",
     "js-yaml": "^3.3.1",
-    "json-loader": "^0.5.2",
     "lodash": "^3.9.3",
     "merge-stream": "^0.1.7",
     "node-libs-browser": "^0.5.2",
@@ -47,16 +46,12 @@
     "run-sequence": "^1.1.0",
     "webpack": "^1.9.10",
     "webpack-dev-server": "^1.9.0",
-    "yaml-loader": "^0.1.0",
-    "yargs": "^3.10.0"
+    "yargs": "^3.10.0",
+    "rimraf": "^2.4.0"
   },
   "devDependencies": {
-    "babel": "^5.4.2",
-    "babel-core": "^5.4.2",
     "chai": "^2.3.0",
-    "chunk-manifest-webpack-plugin": "0.0.1",
     "expect.js": "^0.3.1",
-    "mocha": "^2.2.5",
-    "rimraf": "^2.4.0"
+    "mocha": "^2.2.5"
   }
 }
