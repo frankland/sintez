@@ -12,3 +12,4 @@ Sintez
 - [X] process sintez config to builder and server config
 - [ ] merge user config with default config
 - [X] rename builder and server methods!
+- [ ] check if port already in use for server
