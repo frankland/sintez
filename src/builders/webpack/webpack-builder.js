@@ -40,7 +40,7 @@ export default class WebpackBuilder extends BaseBuilder {
     var output = outputConverter.getConfig(this.config.output);
 
     var resolveConverter = new ResolveConverter(src, dest);
-    var resolve = resolveConverter.getConfig(this.config.aliases, this.config.resolve);
+    var resolve = resolveConverter.getConfig(this.config.alias, this.config.resolve);
 
     // plugins
     var optimizeConverter = new OptimizeConverter(src, dest);

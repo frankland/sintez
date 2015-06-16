@@ -35,7 +35,7 @@ function getDefaults(src, dest) {
     //'output': 'index-build.js',
 
     'loaders.babel': join(src, '.+\.js$'),
-    'loaders.yml':  join(src, '.+\.yml$'),
+    'loaders.yaml':  join(src, '.+\.yml$'),
     'loaders.html':  join(src, '.+\.html$'),
     'loaders.json':  join(src, '.+\.json$'),
     'loaders.jade':  join(src, '.+\.jade'),
@@ -133,7 +133,7 @@ export default class Sintez {
         entry: this.get('entry'),
         loaders:  this.get('loaders'),
         //chunks: this.get('chunks'),
-        aliases: this.get('aliases'),
+        alias: this.get('alias'),
         resolve: this.get('resolve')
       });
     }

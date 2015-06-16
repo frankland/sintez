@@ -7,12 +7,12 @@ import BaseConverter from '../base-converter';
 
 export default class ResolveCoverter extends BaseConverter {
 
-  getConfig(aliases, resolve) {
+  getConfig(alias, resolve) {
     var config = null;
 
-    if (!isEmpty(aliases) && isObject(aliases)) {
+    if (!isEmpty(alias) && isObject(alias)) {
       config = config || {};
-      config.aliases = aliases;
+      config.alias = alias;
     }
 
     if (!isEmpty(resolve) && isArray(resolve)) {

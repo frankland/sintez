@@ -9,7 +9,7 @@ var webpackLoaders = new Map();
 
 webpackLoaders.set('babel', 'babel-loader');
 webpackLoaders.set('traceur', 'traceur-loader');
-webpackLoaders.set('yml', 'yml-loader');
+webpackLoaders.set('yaml', 'json-loader!yaml-loader');
 webpackLoaders.set('html', 'html-loader');
 webpackLoaders.set('json', 'json-loader');
 webpackLoaders.set('jade', 'jade-loader');
