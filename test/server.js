@@ -1,3 +1,8 @@
+/**
+ * @deprecated
+ */
+
+
 import gulp from 'gulp';
 
 var Manager = require('../tasks/manager');
