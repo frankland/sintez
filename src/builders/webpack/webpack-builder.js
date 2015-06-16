@@ -83,7 +83,11 @@ export default class WebpackBuilder extends BaseBuilder {
     /**
      * console log Plugin. apply "done" and "invalid"
      */
-    config.plugins.push(new WebpackLogPlugin());
+    var logPlugin = new WebpackLogPlugin((event, params) => {
+      this.emit(event, params);
+    });
+
+    config.plugins.push(logPlugin);
 
     return config;
   }
@@ -101,7 +105,7 @@ export default class WebpackBuilder extends BaseBuilder {
     return this[local.processedConfig];
   }
 
-  getInstance() {
+  getWebpackInstance() {
     if (!this[local.instance]) {
       var config = this.getConfig();
       this[local.instance] = Webpack(config);
@@ -111,7 +115,7 @@ export default class WebpackBuilder extends BaseBuilder {
   }
 
   run(cb) {
-    var instance = this.getInstance();
+    var instance = this.getWebpackInstance();
     instance.run(cb);
   }
 }

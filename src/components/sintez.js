@@ -38,10 +38,12 @@ function getDefaults(src, dest) {
     'loaders.yml':  join(src, '.+\.yml$'),
     'loaders.html':  join(src, '.+\.html$'),
     'loaders.json':  join(src, '.+\.json$'),
+    'loaders.jade':  join(src, '.+\.jade'),
 
     'server': 'webpack',
     'host': 'localhost',
-    'port': 9001
+    'port': 9001,
+    'livereload': 35729
   });
 }
 

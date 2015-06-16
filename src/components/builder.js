@@ -12,6 +12,7 @@ var builders = new Map();
 builders.set('webpack', WebpackBuilder);
 
 export default class Builder {
+
   constructor(config) {
     this[local.config] = config;
     var builderName = config.builder;
@@ -45,11 +46,11 @@ export default class Builder {
     return outputScripts.map(sciprt => join('/', sciprt));
   }
 
-  getInstance() {
+  getApplicationBuilder() {
     return this[local.builder];
   }
 
   run(cb) {
-    this.getInstance().run(cb);
+    this.getApplicationBuilder().run(cb);
   }
 }

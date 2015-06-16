@@ -25,11 +25,11 @@ export default class Server {
     return this[local.config];
   }
 
-  getInstance() {
+  getApplicationServer() {
     return this[local.server];
   }
 
   run(cb) {
-    this.getInstance().run(cb);
+    this.getApplicationServer().run(cb);
   }
 }

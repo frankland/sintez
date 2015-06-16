@@ -1,6 +1,6 @@
 export default class BaseServer {
   constructor(serverConfig) {
-    this.builder = serverConfig.builder.getInstance();
+    this.builder = serverConfig.builder.getApplicationBuilder();
     this.config = serverConfig;
   }
 

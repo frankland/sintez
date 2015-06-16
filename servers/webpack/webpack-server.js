@@ -1,9 +1,3 @@
-//import { server as logger } from './log';
-//
-//import { resolve } from 'path';
-
-//import gutil from 'gulp-util';
-
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -24,13 +18,7 @@ var _webpackDevServer = require('webpack-dev-server');
 
 var _webpackDevServer2 = _interopRequireDefault(_webpackDevServer);
 
-//import isFunction from 'lodash/lang/isFunction';
-//import cloneDeep from 'lodash/lang/cloneDeep';
-
 var _path = require('path');
-
-//
-//import sintez from '../../configs/sintez-config';
 
 var _baseServer = require('../base-server');
 
@@ -85,7 +73,7 @@ var WebpackServer = (function (_BaseServer) {
     key: 'getInstance',
     value: function getInstance() {
       if (!this[local.server]) {
-        var webpack = this.builder.getInstance();
+        var webpack = this.builder.getWebpackInstance();
         var serverConfig = this.getConfig();
 
         this[local.server] = new _webpackDevServer2['default'](webpack, serverConfig);

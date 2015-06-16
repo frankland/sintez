@@ -12,6 +12,7 @@ webpackLoaders.set('traceur', 'traceur-loader');
 webpackLoaders.set('yml', 'yml-loader');
 webpackLoaders.set('html', 'html-loader');
 webpackLoaders.set('json', 'json-loader');
+webpackLoaders.set('jade', 'jade-loader');
 
 export default class LoadersConverter extends BaseConverter {
   getConfig(loaders) {

@@ -12,7 +12,7 @@ var BaseServer = (function () {
   function BaseServer(serverConfig) {
     _classCallCheck(this, BaseServer);
 
-    this.builder = serverConfig.builder.getInstance();
+    this.builder = serverConfig.builder.getApplicationBuilder();
     this.config = serverConfig;
   }
 
