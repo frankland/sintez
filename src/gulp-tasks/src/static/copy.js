@@ -3,11 +3,6 @@ import { join } from 'path';
 import mergeStreams from 'merge-stream';
 import rename from 'gulp-rename';
 
-//import gutil from 'gulp-util';
-
-//import { assets as logger } from '../../../components/log';
-
-
 import Base from '../../base-task';
 
 export default class StaticCopy extends Base {
@@ -35,10 +30,10 @@ export default class StaticCopy extends Base {
     stream.pipe(this.gulp.dest(dest))
 
       .on('end', () => {
-        //logger.updated({
-        //  src: mask,
-        //  dest: toPath
-        //});
+        this.logger.updated({
+          src: mask,
+          dest: toPath
+        });
       });
 
     return stream;

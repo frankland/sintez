@@ -6,11 +6,13 @@ export default class BuilderInfo extends Base {
     return 'info:builder';
   }
 
-  run() {
+  run(done) {
     var builder = this.sintez.getBuilder();
-    var config = builder.getInstance().getConfig();
-    var yml = pretty.render(config);
+    var config = builder.getApplicationBuilder().getConfig();
 
+    var yml = pretty.render(config);
     console.log(yml);
+
+    done();
   }
 }

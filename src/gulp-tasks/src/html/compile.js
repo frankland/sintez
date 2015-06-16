@@ -1,13 +1,15 @@
-import { join } from 'path';
+import { join, extname } from 'path';
 
 import htmlreplace from 'gulp-html-replace';
 import rename from 'gulp-rename';
 
-//import gutil from 'gulp-util';
-
-//import { html as logger } from '../../../components/log';
+import gulpJade from 'gulp-jade';
 
 import Base from '../../base-task';
+
+
+var compilersMap = new Map();
+compilersMap.set('.jade', (locals) => gulpJade({locals}));
 
 export default class HtmlCompile extends Base {
 
@@ -44,16 +46,28 @@ export default class HtmlCompile extends Base {
 
     var options = this.getOptions();
 
-    return this.gulp.src(src)
-      .pipe(htmlreplace(options))
+    var stream =  this.gulp.src(src);
+
+    var ext = extname(src);
+
+    if (compilersMap.has(ext)) {
+      var compiler = compilersMap.get(ext);
+      var resourceOptions = resources.getOptions('index');
+
+      stream.pipe(compiler({
+        params: resourceOptions.params || {}
+      }));
+    }
+
+    return stream.pipe(htmlreplace(options))
       .pipe(rename(name))
       .pipe(this.gulp.dest(dest))
       .on('end', () => {
 
-        //logger.updated({
-        //  src,
-        //  dest: join(dest, name)
-        //});
+        this.logger.updated({
+          src,
+          dest: join(dest, name)
+        });
       });
   }
 }

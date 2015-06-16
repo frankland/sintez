@@ -1,4 +1,3 @@
-//import gulp from 'gulp';
 import LessCompile from './compile';
 
 import Base from '../../base-task';

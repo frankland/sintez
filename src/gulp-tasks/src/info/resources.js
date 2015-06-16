@@ -4,7 +4,7 @@ import { join } from 'path';
 
 import Base from '../../base-task';
 
-import helpers from '../../../utils/helpers';
+import { toUnifiedPath } from '../../../utils/helpers';
 
 export default class ResourcesInfo extends Base {
   getDefaultTaskName() {
@@ -59,7 +59,7 @@ export default class ResourcesInfo extends Base {
           path = join(resources.getUrl(key), '/', mask);
         }
 
-        item.push(helpers.toUnifiedPath(path));
+        item.push(toUnifiedPath(path));
       } else {
         item.push('-');
       }

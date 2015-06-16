@@ -1,43 +1,45 @@
 import gutil from 'gulp-util';
 
-var colors = new Map();
+var colorsMap = new Map();
 
-colors.set('red', gutil.colors.red);
-colors.set('green', gutil.colors.green);
-colors.set('yellow', gutil.colors.yellow);
-colors.set('blue', gutil.colors.blue);
-colors.set('magenta', gutil.colors.magenta);
-colors.set('cyan', gutil.colors.cyan);
-colors.set('white', gutil.colors.white);
+colorsMap.set('white', gutil.colors.white);
+colorsMap.set('magenta', gutil.colors.magenta);
+colorsMap.set('cyan', gutil.colors.cyan);
+colorsMap.set('blue', gutil.colors.blue);
+colorsMap.set('red', gutil.colors.red);
+colorsMap.set('yellow', gutil.colors.yellow);
+colorsMap.set('green', gutil.colors.green);
 
 
-var max = 10;
+var colors = colorsMap.values();
+
+var getNextColoring = () => {
+  var color = colors.next();
+  if (color.done) {
+    colors = colorsMap.values();
+  }
+
+  return color.value;
+};
+
 var isEnabled = true;
 
 export default class Log {
-  constructor(namespace, color) {
-    if (namespace.length > 10) {
-      throw new Error(`Invalid namespace "${namespace}". Length should be less than 10 :)`);
-    }
-
-    this.namespace = namespace;
-
-    var n = max - this.namespace.length;
-    var space = (new Array(n > 0 ? n : 0)).join(' ');
-
-    this.title = `${this.namespace.toUpperCase()} ${space}`;
+  constructor(task, color) {
+    this.task = task;
 
     if (color && colors.has(color)) {
       this.coloring = colors.get(color);
     } else {
-      this.coloring = colors.get('white');
+      this.coloring = getNextColoring();
     }
   }
 
   log(message) {
     if (isEnabled) {
       var coloring = this.coloring;
-      gutil.log(`${coloring(this.title)} ${message}`);
+      var completeMessage = message.replace(/((_)([^_]+)(_))/g, coloring('$3'));
+      gutil.log(`${coloring(this.task)} ${completeMessage}`);
     }
   }
 
@@ -52,7 +54,7 @@ export default class Log {
       info += ` -> ${coloring(options.dest)}`;
     }
 
-    this.log(`updated. ${info}`);
+    this.log(`fired. ${info}`);
   }
 
   static enable() {
@@ -63,10 +65,3 @@ export default class Log {
     isEnabled = false;
   }
 }
-
-export const js = new Log('js', 'cyan');
-export const html = new Log('html', 'yellow');
-export const less = new Log('less', 'blue');
-export const server = new Log('server', 'green');
-export const assets = new Log('assets', 'magenta');
-

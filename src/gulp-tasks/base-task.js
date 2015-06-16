@@ -1,6 +1,6 @@
 import Sintez from '../components/sintez';
 import WrongSintezInstance from '../utils/exceptions/wrong-sintez-instance';
-
+import GulpLogger from './gulp-logger';
 
 export default class TaskBase {
   constructor(gulp, sintez) {
@@ -10,6 +10,9 @@ export default class TaskBase {
 
     this.sintez = sintez;
     this.gulp = gulp;
+
+    var taskName = this.getDefaultTaskName();
+    this.logger = new GulpLogger(taskName);
   }
 
   getResources() {

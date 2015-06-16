@@ -1,12 +1,6 @@
-//import gulp from 'gulp';
 import rename from 'gulp-rename';
 import less from 'gulp-less';
 import { join } from 'path';
-
-//import gutil from 'gulp-util';
-
-//import { less as logger } from '../../../components/log';
-
 
 import Base from '../../base-task';
 
@@ -32,10 +26,10 @@ export default class LessCompile extends Base {
       .pipe(this.gulp.dest(dest))
       .on('end', () => {
 
-        //logger.updated({
-        //  src: mask,
-        //  dest: join(dest, name)
-        //});
+        this.logger.updated({
+          src: mask,
+          dest: join(dest, name)
+        });
       });
   }
 }

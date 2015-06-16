@@ -47,5 +47,5 @@ export default (gulp) => {
   taskManager.add(new ServerInfo(gulp, sintez));
   taskManager.add(new SintezInfo(gulp, sintez));
 
-  //taskManager.add(new Dev(gulp, sintez));
+  taskManager.add(new Dev(gulp, sintez));
 };
