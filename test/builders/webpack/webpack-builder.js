@@ -6,10 +6,10 @@ import { withChunks as sintezWithChunks } from '../../test-resources/test-sintez
 
 
 var builder = sintez.getBuilder();
-var webpackBuilder = builder.getInstance();
+var webpackBuilder = builder.getApplicationBuilder();
 
 var builderWithChunks = sintezWithChunks.getBuilder();
-var webpackBuilderWithChunks = builderWithChunks.getInstance();
+var webpackBuilderWithChunks = builderWithChunks.getApplicationBuilder();
 
 var resolvedDest = resolve(sintez.getDest());
 var resolvedDestWithChunks = resolve(sintezWithChunks.getDest());
