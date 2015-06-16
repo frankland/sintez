@@ -93,7 +93,7 @@ describe('Webpack builder', () => {
     var resolve = config.resolve;
 
     expect(resolve).to.eql({
-      aliases: {
+      alias: {
         yo: 'events',
         A: 'app/a_a'
       },
