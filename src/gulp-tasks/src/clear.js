@@ -1,5 +1,5 @@
 import { sync as rm } from 'rimraf';
-import { resolve } from 'path';
+import { resolve } from '../../utils/path';
 
 import Base from '../base-task';
 

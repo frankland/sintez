@@ -1,4 +1,4 @@
-import { join, resolve as res } from 'path';
+import { join, resolve as res } from '../../utils/path';
 
 import Webpack from 'webpack';
 import WebpackLogPlugin from './plugins/webpack-log-plugin';

@@ -1,6 +1,6 @@
 import Table from 'cli-table';
 import gutil from 'gulp-util';
-import { join } from 'path';
+import { join } from '../../../utils/path';
 
 import Base from '../../base-task';
 

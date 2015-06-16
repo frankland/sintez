@@ -1,4 +1,4 @@
-import { join, extname } from 'path';
+import { join, extname } from '../../../utils/path';
 
 import htmlreplace from 'gulp-html-replace';
 import rename from 'gulp-rename';

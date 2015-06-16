@@ -2,7 +2,7 @@ import '../utils/polyfills';
 
 import { load as JSONfromYml } from 'js-yaml';
 import { readFileSync, existsSync } from 'fs';
-import { resolve, join, dirname } from 'path';
+import { resolve, join, dirname } from '../utils/path';
 
 import ObjectDescription from 'object-description';
 
