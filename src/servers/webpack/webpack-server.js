@@ -1,6 +1,6 @@
 import WebpackDevServer from 'webpack-dev-server';
 
-import { resolve, basename } from 'path';
+import { resolve, basename } from '../../utils/path';
 
 import BaseServer from '../base-server';
 

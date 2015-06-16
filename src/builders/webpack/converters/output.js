@@ -1,4 +1,4 @@
-import { resolve } from 'path';
+import { resolve } from '../../../utils/path';
 
 import BaseConverter from '../base-converter';
 

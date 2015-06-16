@@ -1,6 +1,6 @@
 import rename from 'gulp-rename';
 import less from 'gulp-less';
-import { join } from 'path';
+import { join } from '../../../utils/path';
 
 import Base from '../../base-task';
 
