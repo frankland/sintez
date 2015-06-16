@@ -1,5 +1,5 @@
 import { sync as globSync } from 'glob';
-import { join } from '../../../utils/path';
+import { join } from 'path';
 import isArray from 'lodash/lang/isArray';
 
 import BaseConverter from '../base-converter';

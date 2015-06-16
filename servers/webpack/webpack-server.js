@@ -18,7 +18,7 @@ var _webpackDevServer = require('webpack-dev-server');
 
 var _webpackDevServer2 = _interopRequireDefault(_webpackDevServer);
 
-var _utilsPath = require('../../utils/path');
+var _path = require('path');
 
 var _baseServer = require('../base-server');
 
@@ -45,7 +45,7 @@ var WebpackServer = (function (_BaseServer) {
       var server = this[local.server];
 
       var index = this.config.index;
-      var resolvedIndex = (0, _utilsPath.resolve)(index);
+      var resolvedIndex = (0, _path.resolve)(index);
 
       server.app.get('*', function (req, res) {
         res.sendFile(resolvedIndex);
@@ -66,7 +66,7 @@ var WebpackServer = (function (_BaseServer) {
         stats: {
           colors: true
         },
-        index: (0, _utilsPath.basename)(this.config.index)
+        index: (0, _path.basename)(this.config.index)
       };
     }
   }, {

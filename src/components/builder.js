@@ -1,4 +1,4 @@
-import { join } from '../utils/path';
+import { join } from 'path';
 
 import WebpackBuilder from  '../builders/webpack/webpack-builder';
 

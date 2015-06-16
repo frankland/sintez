@@ -1,4 +1,4 @@
-import { resolve, join } from '../utils/path';
+import { resolve, join } from 'path';
 import cloneDeep from 'lodash/lang/cloneDeep';
 
 import { toUnifiedPath } from '../utils/helpers';

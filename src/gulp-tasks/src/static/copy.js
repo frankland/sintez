@@ -1,5 +1,5 @@
 //import gulp from 'gulp';
-import { join } from '../../../utils/path';
+import { join } from 'path';
 import mergeStreams from 'merge-stream';
 import rename from 'gulp-rename';
 
