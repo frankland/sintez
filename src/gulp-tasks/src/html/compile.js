@@ -1,5 +1,7 @@
 import { join, extname } from '../../../utils/path';
 
+import plumber from 'gulp-plumber';
+
 import htmlreplace from 'gulp-html-replace';
 import rename from 'gulp-rename';
 
@@ -9,7 +11,7 @@ import Base from '../../base-task';
 
 
 var compilersMap = new Map();
-compilersMap.set('.jade', (locals) => gulpJade({locals}));
+compilersMap.set('.jade', (options) => gulpJade(options));
 
 export default class HtmlCompile extends Base {
 
@@ -21,7 +23,12 @@ export default class HtmlCompile extends Base {
     var resources = this.sintez.getResources();
     var builder = this.sintez.getBuilder();
 
-    var options = {};
+    var options = {
+      base: {
+        src: '/',
+        tpl: '<base href="%s">'
+      }
+    };
 
     if (resources.hasResource('less')) {
       options.css = resources.getUrl('less');
@@ -64,17 +71,15 @@ export default class HtmlCompile extends Base {
     var dest = resources.getTarget(resource);
     var name = resources.getDestName(resource);
 
-    var stream = this.gulp.src(src);
+    var stream = this.gulp.src(src)
+      .pipe(plumber());
 
     var ext = extname(src);
 
     if (compilersMap.has(ext)) {
       var compiler = compilersMap.get(ext);
-      var resourceOptions = resources.getOptions('index');
-
-      stream.pipe(compiler({
-        params: resourceOptions.params || {}
-      }));
+      var resourceOptions = resources.getOptions(resource);
+      stream.pipe(compiler(resourceOptions));
     }
 
     return stream.pipe(htmlreplace(options))

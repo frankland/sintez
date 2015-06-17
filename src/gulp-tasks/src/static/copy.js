@@ -1,8 +1,10 @@
 //import gulp from 'gulp';
-import { join } from '../../../utils/path';
+import plumber from 'gulp-plumber';
+
 import mergeStreams from 'merge-stream';
 import rename from 'gulp-rename';
 
+import { join } from '../../../utils/path';
 import Base from '../../base-task';
 
 export default class StaticCopy extends Base {
@@ -18,7 +20,8 @@ export default class StaticCopy extends Base {
 
     var options = resources.getOptions(key);
 
-    var stream = this.gulp.src(mask, options);
+    var stream = this.gulp.src(mask, options)
+      .pipe(plumber());
 
     var toPath = dest;
     if (resources.hasDestName(key)) {

@@ -1,3 +1,5 @@
+import plumber from 'gulp-plumber';
+
 import rename from 'gulp-rename';
 import less from 'gulp-less';
 import { join } from '../../../utils/path';
@@ -21,6 +23,7 @@ export default class LessCompile extends Base {
     });
 
     return this.gulp.src(mask)
+      .pipe(plumber())
       .pipe(less(options))
       .pipe(rename(name))
       .pipe(this.gulp.dest(dest))
