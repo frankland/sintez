@@ -1,4 +1,5 @@
 import Log from './gulp-logger';
+import isFunction from 'lodash/lang/isFunction';
 
 var logger = new Log('tasks');
 
@@ -12,7 +13,15 @@ export default class TaskManager {
   }
 
   add(task, name) {
-    var taskName = name || task.getDefaultTaskName();
+    var taskName = name;
+
+    if (!taskName) {
+      if (isFunction(task.getDefaultTaskName)) {
+        taskName = task.getDefaultTaskName();
+      } else {
+        throw new Error('Task should implement @getDefaultTaskName method');
+      }
+    }
 
     this[local.gulp].task(taskName, (done) => {
       if (task.run.length == 1) {

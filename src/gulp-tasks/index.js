@@ -20,6 +20,7 @@ import ServerInfo from './src/info/server';
 import SintezInfo from './src/info/sintez';
 
 import Dev from './src/dev';
+import All from './src/all';
 
 
 
@@ -48,4 +49,5 @@ export default (gulp) => {
   taskManager.add(new SintezInfo(gulp, sintez));
 
   taskManager.add(new Dev(gulp, sintez));
+  taskManager.add(new All(gulp, sintez));
 };

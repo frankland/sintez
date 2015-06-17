@@ -190,10 +190,15 @@ export default class Resources {
    * @returns {object}
    */
   getResource(key) {
-    if (this[local.resources] && !this[local.resources].hasOwnProperty(key)) {
+    if (!this.hasResource(key)) {
       throw new Error(`resource "${key}" does not exist`);
     }
+
     return this[local.resources][key];
+  }
+
+  hasResource(key) {
+    return this[local.resources] && this[local.resources].hasOwnProperty(key);
   }
 
   /**
