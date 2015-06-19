@@ -17,6 +17,7 @@ var getNextColoring = () => {
   var color = colors.next();
   if (color.done) {
     colors = colorsMap.values();
+    color = colors.next();
   }
 
   return color.value;
