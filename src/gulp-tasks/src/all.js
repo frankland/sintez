@@ -15,7 +15,7 @@ export default class All extends Base {
   run(done) {
     this.runSequence([
       'html:compile',
-      'less:compile',
+      'css:compile',
       'static:copy',
       'build'
     ], done);

@@ -15,7 +15,8 @@ export default class LessWatch extends Base {
 
   run() {
     var resources = this.getResources();
-    var mask = resources.getMask('index');
+    var index = resources.get('index');
+    var mask = index.getMask();
 
     this.compiler.run();
 

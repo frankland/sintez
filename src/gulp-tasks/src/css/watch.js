@@ -10,12 +10,13 @@ export default class LessWatch extends Base {
   }
 
   getDefaultTaskName() {
-    return 'less:watch';
+    return 'css:watch';
   }
 
   run() {
     var resources = this.getResources();
-    var mask = resources.getMask('less');
+    var less = resources.get('css');
+    var mask = less.getMask();
 
     this.compiler.run();
     return this.gulp.watch(mask, () => {

@@ -5,6 +5,7 @@ import './components/sintez';
 import './components/resources';
 
 import './builders/webpack/webpack-builder';
+import './builders/webpack/build';
 
 //import config from './config';
 //

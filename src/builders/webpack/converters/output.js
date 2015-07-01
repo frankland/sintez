@@ -1,21 +1,19 @@
+import isObject from 'lodash/lang/isObject';
+import isString from 'lodash/lang/isString';
+
+
 import { resolve } from '../../../utils/path';
 
 import BaseConverter from '../base-converter';
 
 
 export default class OutputCoverter extends BaseConverter {
-  getConfig(output) {
-    var filename = null;
-
-    if (output) {
-      filename = output;
-    } else {
-      filename = '[name].js';
-    }
-
+  getConfig() {
     return {
       path: resolve(this.dest),
-      filename
+      filename: "[name].js",
+      chunkFilename: "[name].js",
+      pathinfo: true
     };
   }
 }

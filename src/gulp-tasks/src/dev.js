@@ -15,7 +15,7 @@ export default class Dev extends Base {
   run(done) {
     this.runSequence([
       'html:watch',
-      'less:watch',
+      'css:watch',
       'static:watch',
       'server'
     ], done);

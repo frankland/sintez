@@ -6,12 +6,43 @@ resources:
   index:
     src: index.html
 
+  less-without-src:
+
+  less-invalid-dest:
+    dest:
+     - ui/
+     - assets/
+
+  less-dirs:
+    src: less/
+
   less:
-    mask: less/**/*.less
+    src: less/index.less
     dest: ui/index.css
 
-  favicon:
-    src: favicon.ico
+  less-without-dest:
+    src: less/index.less
+
+  less-array:
+    src:
+      - less/index.less
+      - less/grid.less
+    dest: ui/index.css
+
+  less-array-without-dest:
+    src:
+      - less/main.less
+      - less/grid.less
+
+  less-with-mask:
+    src: less/main.less
+    mask: less/**/*.less
+
+  less-with-array-mask:
+    src: less/main.less
+    mask:
+      - less/**/*.less
+      - less-grid/**/*.less
 
   assets:
     mask: assets/**/*
@@ -21,50 +52,28 @@ resources:
     src: assets/1.png
     dest: my-logo.png
 
+  js:
+    src:
+      - vendor/v_a.js
+      - vendor/v_b.js
+      - events
+      - app/deps/d_a.js
+      - app/a_a.js
+      - app/a_b.js
+    dest: js/build.js
+    options:
+      split:
+        node_modules: node_modules/
+        vendor: vendor/
+        deps: app/deps
+        bootstrap: app/a_a.js
+        app: app/
+
+
 copy:
   - favicon
   - assets
   - specific-image
-
-
-output: js/sintez-build.js
-
-
-#
-#code-split:
-#  components:
-#    - ../../node_modules
-#    - ../../bower_components
-#  deps: deps/
-#  app: app/
-#
-#
-#entry:
-#  js/vendor:
-#    - vendor/v_a.js
-#    - vendor/v_b.js
-#    - events
-#    - app/deps/d_a.js
-#    - app/deps/d_b.js
-#    - app/a_a.js
-#    - app/a_b.js
-
-
-
-entry:
-#  app-code:
-  js/vendor:
-    - vendor/v_a.js
-    - vendor/v_b.js
-    - events
-
-  js/deps:
-    - app/deps/d_a.js
-    - app/deps/d_b.js
-
-  js/app:
-    - app/a_a.js
-    - app/a_b.js
 
 alias:
   yo: events

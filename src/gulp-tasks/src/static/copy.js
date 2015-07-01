@@ -14,24 +14,26 @@ export default class StaticCopy extends Base {
 
   copy(key) {
     var resources = this.getResources();
+    var resource = resources.get(key);
 
-    var mask = resources.getMask(key);
-    var dest = resources.getTarget(key);
+    var mask = resource.getMask();
+    var dest = resource.getTarget();
 
-    var options = resources.getOptions(key);
+    var options = resource.getOptions();
 
     var stream = this.gulp.src(mask, options)
       .pipe(plumber());
 
     var toPath = dest;
-    if (resources.hasDestName(key)) {
-      var name = resources.getDestName(key);
-      stream.pipe(rename(name));
-      toPath = join(dest, name);
+
+    var destName = resource.getDestName();
+
+    if (destName) {
+      stream.pipe(rename(destName));
+      toPath = join(dest, destName);
     }
 
     stream.pipe(this.gulp.dest(dest))
-
       .on('end', () => {
         this.logger.updated({
           src: mask,

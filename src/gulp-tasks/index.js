@@ -8,8 +8,8 @@ import Clear from './src/clear';
 import HtmlWatch from './src/html/watch';
 import HtmlCompile from './src/html/compile';
 
-import LessWatch from './src/less/watch';
-import LessCompile from './src/less/compile';
+import CssWatch from './src/css/watch';
+import CssCompile from './src/css/compile';
 
 import StaticWatch from './src/static/watch';
 import StaticCopy from './src/static/copy';
@@ -37,8 +37,8 @@ export default (gulp) => {
   taskManager.add(new HtmlWatch(gulp, sintez));
   taskManager.add(new HtmlCompile(gulp, sintez));
 
-  taskManager.add(new LessWatch(gulp, sintez));
-  taskManager.add(new LessCompile(gulp, sintez));
+  taskManager.add(new CssWatch(gulp, sintez));
+  taskManager.add(new CssCompile(gulp, sintez));
 
   taskManager.add(new StaticWatch(gulp, sintez));
   taskManager.add(new StaticCopy(gulp, sintez));

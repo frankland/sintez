@@ -8,13 +8,11 @@ export default class ServerInfo extends Base {
   }
 
 
-  run(done) {
+  run() {
     var server = this.sintez.getServer();
     var config = server.getConfig();
     var yml = pretty.render(config);
 
     console.log(yml);
-
-    done();
   }
 }

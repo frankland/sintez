@@ -1,3 +1,7 @@
+import isArray from 'lodash/lang/isArray';
+
+import pretty from 'prettyjson';
+
 import Table from 'cli-table';
 import gutil from 'gulp-util';
 import { join } from '../../../utils/path';
@@ -11,14 +15,13 @@ export default class ResourcesInfo extends Base {
     return 'info:resources';
   }
 
-
   run() {
     var resources = this.sintez.getResources();
     var config = resources.getConfig();
     var copy = this.sintez.get('copy') || [];
 
-    var InfoTable = new Table({
-      head: ['Resource', 'Src', 'Mask', 'Dest', 'Copy', 'Url']
+    var table = new Table({
+      head: ['Resource', 'Src', 'Mask', 'Dest', 'Copy', 'Url', 'Options']
     });
 
     for (var key of Object.keys(config)) {
@@ -26,47 +29,62 @@ export default class ResourcesInfo extends Base {
         gutil.colors.green(key)
       ];
 
-      if (resources.hasSrc(key)) {
-        item.push(resources.getSrc(key));
+      var resource = resources.get(key);
+
+      // ----- src -------
+      var src = resource.getSrc();
+      var resourceSrc = pretty.render(src);
+      item.push(resourceSrc);
+
+      // ----- mask -------
+      var mask = resource.getMask();
+      var resourceMask = pretty.render(mask);
+      item.push(resourceMask);
+
+      // ----- dest -------
+      var dest = resource.getDest();
+      var resourceDest = pretty.render(dest);
+      item.push(resourceDest);
+
+      // ----- copy -------
+      item.push(copy.indexOf(key) != -1 ? '+': '-');
+
+      // ----- url -------
+      var resourceUrl = null;
+      if (resource.hasUrl()) {
+        var url = resource.getUrl();
+        resourceUrl =  pretty.render(url);
       } else {
-        item.push('-');
+        resourceUrl = '-';
       }
+      item.push(resourceUrl);
 
-      if (resources.hasMask(key)) {
-        item.push(resources.getMask(key));
+      // ----- options -------
+      var resourceOptions = null;
+      var options = resource.getOptions();
+      if (Object.keys(options).length) {
+        resourceOptions = pretty.render(options);
       } else {
-        item.push('-');
+        resourceOptions = '-';
       }
+      item.push(resourceOptions);
 
-      if (resources.hasDest(key)) {
-        item.push(resources.getDest(key));
-      } else {
-        item.push('-');
-      }
-
-      if (copy.indexOf(key) != -1) {
-        item.push('yes');
-      } else {
-        item.push('no');
-      }
-
-      if (resources.hasDest(key)) {
-        var mask = resources.getMask(key);
-        var path = null;
-        if (resources.getDestName(key)) {
-          path = join(resources.getUrl(key));
-        } else {
-          path = join(resources.getUrl(key), '/', mask);
-        }
-
-        item.push(toUnifiedPath(path));
-      } else {
-        item.push('-');
-      }
-
-      InfoTable.push(item);
+      table.push(item);
     }
 
-    console.log(InfoTable.toString());
+    var outputTable = new Table({
+      head: ['Scripts', 'Styles']
+    });
+
+    var scripts = this.sintez.getOutputScripts();
+    var styles = this.sintez.getOutputStyles();
+
+    outputTable.push([
+      pretty.render(scripts),
+      pretty.render(styles)
+    ]);
+
+    console.log(table.toString());
+    console.log(outputTable.toString());
   }
 }

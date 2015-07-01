@@ -6,95 +6,163 @@ var resources = sintez.getResources();
 
 
 describe('Resources component', () => {
-  it('should return or throw error if resource does not exists', () => {
-    expect(resources.getResource('less')).to.be.an('object');
-    expect(() => resources.getResource('x')).to.throw(Error);
+
+  it('should throw error resource is not defined', () => {
+    expect(() => resources.get('less-unexisting')).to.throw(Error);
   });
 
-  it('should has destination', () => {
-    expect(resources.hasDest('less')).to.be.equal(true);
-    expect(resources.hasDest('favicon')).to.be.equal(true);
-    expect(resources.hasDest('index')).to.be.equal(true);
+  it('should throw error if no src', () => {
+    expect(() => resources.get('less-without-src')).to.throw(Error);
   });
 
-  it('should return relative destination', () => {
-    expect(resources.getRelativeDest('less')).to.be.equal('ui/index.css');
-    expect(resources.getRelativeDest('favicon')).to.be.equal('favicon.ico');
-    expect(resources.getRelativeDest('index')).to.be.equal('index.html');
+  // -------------- SRC -------------------
+
+  it('should return valid source and original source paths', () => {
+    var less = resources.get('less');
+
+    expect(less.getSrc()).to.eql([
+      './test/test-resources/src/less/index.less'
+    ]);
+    expect(less.getOriginalSrc()).to.eql('less/index.less');
   });
 
-  it('should return destination', () => {
-    expect(resources.getDest('less')).to.be.equal('test/test-resources/dest/default/ui/index.css');
-    expect(resources.getDest('favicon')).to.be.equal('test/test-resources/dest/default/favicon.ico');
-    expect(resources.getDest('index')).to.be.equal('test/test-resources/dest/default/index.html');
+  it('should return valid source and original source paths if src is array', () => {
+    var less = resources.get('less-array');
+
+    expect(less.getSrc()).to.eql([
+      './test/test-resources/src/less/index.less',
+      './test/test-resources/src/less/grid.less'
+    ]);
+    expect(less.getOriginalSrc()).to.eql([
+      'less/index.less',
+      'less/grid.less'
+    ]);
   });
 
-  it('should return relative target', () => {
-    expect(resources.getRelativeTarget('less')).to.be.equal('ui/');
-    expect(resources.getRelativeTarget('favicon')).to.be.equal('');
-    expect(resources.getRelativeTarget('index')).to.be.equal('');
+  // -------------- DEST -------------------
+
+  it('should throw error is dest is not string', () => {
+    expect(() => resources.get('less-invalid-dest')).to.throw(Error);
   });
 
-  it('should return target', () => {
-    expect(resources.getTarget('less')).to.be.equal('test/test-resources/dest/default/ui/');
-    expect(resources.getTarget('favicon')).to.be.equal('test/test-resources/dest/default/');
-    expect(resources.getTarget('index')).to.be.equal('test/test-resources/dest/default/');
+  it('should calc dest automatically if no dest and src is string', () => {
+    var less = resources.get('less-without-dest');
+
+    expect(less.getDest()).to.eql('test/test-resources/dest/default/less/index.less');
   });
 
-  it('should return dest name', () => {
-    expect(resources.getDestName('less')).to.be.equal('index.css');
-    expect(resources.getDestName('favicon')).to.be.equal('favicon.ico');
-    expect(resources.getDestName('index')).to.be.equal('index.html');
-    expect(resources.getDestName('specific-image')).to.be.equal('my-logo.png');
+  it('should throw error if no dest and src is array', () => {
+    expect(() => resources.get('less-array-without-dest')).to.throw(Error);
   });
 
-  // -----------
-  it('should has src', () => {
-    expect(resources.hasSrc('less')).to.be.equal(false);
-    expect(resources.hasSrc('favicon')).to.be.equal(true);
-    expect(resources.hasSrc('index')).to.be.equal(true);
+  // -------------- MASK -------------------
+
+  it('should calculate mask automatically', () => {
+    var less = resources.get('less');
+    expect(less.getMask()).to.be.eql('test/test-resources/src/less/index.less');
   });
 
-  it('should return relative src', () => {
-    expect(resources.getRelativeSrc('specific-image')).to.be.equal('assets/1.png');
-    expect(resources.getRelativeSrc('favicon')).to.be.equal('favicon.ico');
-    expect(resources.getRelativeSrc('index')).to.be.equal('index.html');
+  it('should calculate mask automatically if src is array', () => {
+    var less = resources.get('less-array');
+
+    expect(less.getMask()).to.be.eql([
+      'test/test-resources/src/less/index.less',
+      'test/test-resources/src/less/grid.less'
+    ]);
   });
 
-  it('should return src', () => {
-    expect(resources.getSrc('specific-image')).to.be.equal('test/test-resources/src/assets/1.png');
-    expect(resources.getSrc('favicon')).to.be.equal('test/test-resources/src/favicon.ico');
-    expect(resources.getSrc('index')).to.be.equal('test/test-resources/src/index.html');
+  it('should return correct mask', () => {
+    var less = resources.get('less-with-mask');
+    expect(less.getMask()).to.be.eql('test/test-resources/src/less/**/*.less');
   });
 
-  it('should return relative location', () => {
-    expect(resources.getRelativeLocation('specific-image')).to.be.equal('assets/');
-    expect(resources.getRelativeLocation('favicon')).to.be.equal('');
-    expect(resources.getRelativeLocation('index')).to.be.equal('');
+  it('should return correct mask if mask described as array', () => {
+    var less = resources.get('less-with-array-mask');
+    expect(less.getMask()).to.be.eql([
+      'test/test-resources/src/less/**/*.less',
+      'test/test-resources/src/less-grid/**/*.less'
+    ]);
   });
 
-  it('should return location', () => {
-    expect(resources.getLocation('specific-image')).to.be.equal('test/test-resources/src/assets/');
-    expect(resources.getLocation('favicon')).to.be.equal('test/test-resources/src/');
-    expect(resources.getLocation('index')).to.be.equal('test/test-resources/src/');
+  // -------------- NAME -------------------
+
+  it('should return correct name', () => {
+    var less = resources.get('less');
+    expect(less.getName()).to.be.eql('index.less');
   });
 
-  it('should return name', () => {
-    expect(resources.getName('specific-image')).to.be.equal('1.png');
-    expect(resources.getName('favicon')).to.be.equal('favicon.ico');
-    expect(resources.getName('index')).to.be.equal('index.html');
+  it('should return null if dest without filename', () => {
+    var less = resources.get('less-dirs');
+    expect(less.getName()).to.be.eql(null);
   });
 
-  it('should return mask', () => {
-    expect(resources.getMask('less')).to.be.equal('test/test-resources/src/less/**/*.less');
-    expect(resources.getMask('favicon')).to.be.equal('test/test-resources/src/favicon.ico');
-    expect(resources.getMask('index')).to.be.equal('test/test-resources/src/index.html');
+  it('should return correct name if src is array', () => {
+    var less = resources.get('less-array');
+    expect(less.getName()).to.be.eql([
+      'index.less',
+      'grid.less'
+    ]);
   });
 
-  it('should return url', () => {
-    expect(resources.getUrl('less')).to.be.equal('/ui/index.css');
-    expect(resources.getUrl('favicon')).to.be.equal('/favicon.ico');
-    expect(resources.getUrl('index')).to.be.equal('/index.html');
+  // -------------- DEST NAME -------------------
+  it('should return correct destination name', () => {
+    var less = resources.get('less');
+    expect(less.getDestName()).to.be.eql('index.css');
+  });
+
+  it('should return null if destination without filename', () => {
+    var less = resources.get('less-dirs');
+    expect(less.getDestName()).to.be.eql(null);
+  });
+
+  // -------------- LOCATION -------------------
+
+  it('should return correct location', () => {
+    var less = resources.get('less');
+    expect(less.getLocation()).to.be.eql('test/test-resources/src/less/');
+  });
+
+  it('should return correct relative location', () => {
+    var less = resources.get('less');
+    expect(less.getRelativeLocation()).to.be.eql('less/');
+  });
+
+  it('should return correct location if src is array', () => {
+    var less = resources.get('less-array');
+    expect(less.getLocation()).to.be.eql([
+      'test/test-resources/src/less/'
+    ]);
+  });
+
+  it('should return correct relative location if src is array', () => {
+    var less = resources.get('less-array');
+    expect(less.getRelativeLocation()).to.be.eql([
+      'less/'
+    ]);
+  });
+
+  // -------------- TARGET -------------------
+
+  it('should return correct target', () => {
+    var less = resources.get('less');
+    expect(less.getTarget()).to.be.eql('test/test-resources/dest/default/ui/');
+  });
+
+  it('should return correct relative target', () => {
+    var less = resources.get('less');
+    expect(less.getRelativeTarget()).to.be.eql('ui/');
+  });
+
+  // -------------- URL -------------------
+
+  it('should return correct url', () => {
+    var less = resources.get('less');
+    expect(less.getUrl()).to.be.eql('/ui/index.css');
+  });
+
+  it('should check if url is available', () => {
+    var less = resources.get('less-dirs');
+    expect(less.hasUrl()).to.be.eql(false);
   });
 });
 

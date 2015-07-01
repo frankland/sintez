@@ -13,6 +13,7 @@ webpackLoaders.set('yaml', 'json-loader!yaml-loader');
 webpackLoaders.set('html', 'html-loader');
 webpackLoaders.set('json', 'json-loader');
 webpackLoaders.set('jade', 'jade-loader');
+webpackLoaders.set('script', 'script-loader');
 
 export default class LoadersConverter extends BaseConverter {
   getConfig(loaders) {

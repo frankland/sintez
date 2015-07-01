@@ -21,7 +21,6 @@ export default class HtmlCompile extends Base {
 
   getOptions() {
     var resources = this.sintez.getResources();
-    var builder = this.sintez.getBuilder();
 
     var options = {
       base: {
@@ -30,18 +29,13 @@ export default class HtmlCompile extends Base {
       }
     };
 
-    if (resources.hasResource('less')) {
-      options.css = resources.getUrl('less');
-    }
+    options.css = this.sintez.getOutputStyles();
+    options.js = this.sintez.getOutputScripts();
 
-    var scripts = builder.getOutputScripts();
-    if (scripts && scripts.length) {
-      options.js = scripts;
-    }
-
-    if (resources.hasResource('favicon')) {
+    if (resources.has('favicon')) {
+      var favicon = resources.get('favicon');
       options.favicon = {
-        src: resources.getUrl('favicon'),
+        src: favicon.getUrl(),
         tpl: '<link rel="icon" type="image/png" href="%s" />'
       }
     }
@@ -51,7 +45,8 @@ export default class HtmlCompile extends Base {
 
   getName() {
     var resources = this.getResources();
-    return resources.getDestName('index');
+    var index = resources.get('index');
+    return index.getDestName('index');
   }
 
   run(customResource, customOptions) {
@@ -60,16 +55,17 @@ export default class HtmlCompile extends Base {
       options = Object.assign({}, options, customOptions);
     }
 
-    var resource = 'index';
+    var resourceKey = 'index';
     if (customResource) {
-      resource = customResource;
+      resourceKey = customResource;
     }
 
     var resources = this.getResources();
+    var resource = resources.get(resourceKey);
 
-    var src = resources.getSrc(resource);
-    var dest = resources.getTarget(resource);
-    var name = resources.getDestName(resource);
+    var src = resource.getSrc();
+    var dest = resource.getTarget();
+    var name = resource.getDestName();
 
     var stream = this.gulp.src(src)
       .pipe(plumber());
@@ -78,7 +74,8 @@ export default class HtmlCompile extends Base {
 
     if (compilersMap.has(ext)) {
       var compiler = compilersMap.get(ext);
-      var resourceOptions = resources.getOptions(resource);
+      var resourceOptions = resource.getOptions();
+
       stream.pipe(compiler(resourceOptions));
     }
 

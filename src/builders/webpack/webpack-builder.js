@@ -1,18 +1,17 @@
 import { join, resolve as res } from '../../utils/path';
 
+import isArray from 'lodash/lang/isArray';
 import Webpack from 'webpack';
 import WebpackLogPlugin from './plugins/webpack-log-plugin';
-import WebpackSplitPlugin from './plugins/webpack-split-plugin';
-import CommonsChunkPlugin from 'webpack/lib/optimize/CommonsChunkPlugin';
-//import SplitByNamePlugin from 'split-by-name-webpack-plugin';
+import WebpackSplitByPathPlugin from './plugins/webpack-split-plugin';
 
+import CommonsChunkPlugin from 'webpack/lib/optimize/CommonsChunkPlugin';
 
 import BaseBuilder from '../base-builder';
 
 import LoadersConverter from './converters/loaders';
 import OutputConverter from './converters/output';
 import ResolveConverter from './converters/resolve';
-import ChunksConverter from './converters/chunks';
 import OptimizeConverter from './converters/optimize';
 
 import EntryConverter from './converters/entry';
@@ -27,17 +26,22 @@ export default class WebpackBuilder extends BaseBuilder {
     var src = this.config.src;
     var dest = this.config.dest;
 
+
     var bail = false;
-    var devtool = 'source-map';
+    var devtool = 'eval';
+
+    var js = this.config.js;
+    var jsSource = js.getSrc();
+    var jsOutput = js.getOriginalDest();
+    //var jsOutputFilename = js.getDestName();
 
     var entryConverter = new EntryConverter(src, dest);
-    var entry = entryConverter.getConfig(this.config.entry, this.config.output);
-
+    var entry = entryConverter.getConfig(jsSource, jsOutput);
     var loadersConverter = new LoadersConverter(src, dest);
     var loaders = loadersConverter.getConfig(this.config.loaders);
 
     var outputConverter = new OutputConverter(src, dest);
-    var output = outputConverter.getConfig(this.config.output);
+    var output = outputConverter.getConfig();
 
     var resolveConverter = new ResolveConverter(src, dest);
     var resolve = resolveConverter.getConfig(this.config.alias, this.config.resolve);
@@ -45,9 +49,6 @@ export default class WebpackBuilder extends BaseBuilder {
     // plugins
     var optimizeConverter = new OptimizeConverter(src, dest);
     var optimize = optimizeConverter.getConfig(false);
-
-    var chunksConverter = new ChunksConverter(src, dest);
-    var chunks = chunksConverter.getConfig(this.config.entry, this.config.output);
 
     var config = {
       bail,
@@ -69,13 +70,6 @@ export default class WebpackBuilder extends BaseBuilder {
       config.module.loaders = loaders;
     }
 
-    if (chunks) {
-      config.plugins.push(chunks);
-
-      //var chunkManifest = chunksConverter.getChunkManifest();
-      //config.plugins.push(chunkManifest);
-    }
-
     if (optimize) {
       config.plugins.push(optimize);
     }
@@ -86,8 +80,22 @@ export default class WebpackBuilder extends BaseBuilder {
     var logPlugin = new WebpackLogPlugin((event, params) => {
       this.emit(event, params);
     });
-
     config.plugins.push(logPlugin);
+
+    var split = js.getOptions('split');
+
+    if (split) {
+      var relativeTarget = js.getRelativeTarget();
+      var splitConfig = [];
+      for (var name of Object.keys(split)) {
+        splitConfig.push({
+          name: join(relativeTarget, name),
+          path: split[name]
+        });
+      }
+      var splitPlugin = new WebpackSplitByPathPlugin(splitConfig);
+      config.plugins.push(splitPlugin);
+    }
 
     return config;
   }

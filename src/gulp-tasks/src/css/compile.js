@@ -1,31 +1,39 @@
 import plumber from 'gulp-plumber';
 
 import rename from 'gulp-rename';
-import less from 'gulp-less';
+import concatFiles from 'gulp-concat';
+import gulpLess from 'gulp-less';
 import { join } from '../../../utils/path';
 
 import Base from '../../base-task';
 
 export default class LessCompile extends Base {
   getDefaultTaskName() {
-    return 'less:compile';
+    return 'css:compile';
   }
 
   run() {
     var resources = this.getResources();
+    var css = resources.get('css');
 
-    var mask = resources.getMask('less');
-    var dest = resources.getTarget('less');
-    var name = resources.getDestName('less');
+    var mask = css.getMask();
 
-    var options = Object.assign({}, resources.getOptions('less'), {
+    var dest = css.getTarget();
+    var name = css.getDestName();
+
+    var options = Object.assign({}, css.getOptions(), {
       compress: true
     });
 
-    return this.gulp.src(mask)
-      .pipe(plumber())
-      .pipe(less(options))
-      .pipe(rename(name))
+    var stream = this.gulp.src(mask)
+      .pipe(plumber());
+
+    if (name) {
+      stream = stream.pipe(concatFiles(name));
+    }
+
+    return stream
+      .pipe(gulpLess(options))
       .pipe(this.gulp.dest(dest))
       .on('end', () => {
 

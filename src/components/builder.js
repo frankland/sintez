@@ -4,8 +4,7 @@ import WebpackBuilder from  '../builders/webpack/webpack-builder';
 
 var local = {
   config: Symbol('config'),
-  builder: Symbol('builder'),
-  //instance: Symbol('builder-instance')
+  builder: Symbol('builder')
 };
 
 var builders = new Map();
@@ -29,22 +28,6 @@ export default class Builder {
     return this[local.config];
   }
 
-  getOutputScripts() {
-    var config = this[local.config];
-
-    var output = config.output;
-    var entry = config.entry;
-
-    var outputScripts = null;
-
-    if (output) {
-      outputScripts = [output];
-    } else {
-      outputScripts = Object.keys(entry).map(entry => entry + '.js');
-    }
-
-    return outputScripts.map(sciprt => join('/', sciprt));
-  }
 
   getApplicationBuilder() {
     return this[local.builder];

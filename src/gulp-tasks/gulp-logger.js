@@ -1,3 +1,5 @@
+import isArray from 'lodash/lang/isArray';
+
 import gutil from 'gulp-util';
 
 var colorsMap = new Map();
@@ -46,16 +48,15 @@ export default class Log {
 
   updated(options) {
     var coloring = this.coloring;
-    var info = '';
-    if (options.src) {
-      info = coloring(options.src);
+
+    if (!isArray(options.src)) {
+      options.src = [options.src];
     }
 
-    if (options.dest) {
-      info += ` -> ${coloring(options.dest)}`;
+    for (var src of options.src) {
+      var info = `${coloring(src)} -> ${coloring(options.dest)}`;
+      this.log(`fired. ${info}`);
     }
-
-    this.log(`fired. ${info}`);
   }
 
   static enable() {

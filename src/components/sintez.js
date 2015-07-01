@@ -8,37 +8,80 @@ import ObjectDescription from 'object-description';
 
 import getter from 'lodash/object/get';
 import merge from 'lodash/object/merge';
+import isArray from 'lodash/lang/isArray';
 
 import Resources from './resoruces';
 import Builder from './builder';
 import Server from './server';
 
-var local = {
-  config: Symbol('config'),
-  resources: Symbol('resources'),
-  builder: Symbol('builder')
-};
+
+function getOrderedUrls(original, resources) {
+  var urls = [];
+  var originalResource = resources.get(original);
+  var order = originalResource.getOptions('order');
+
+  if (order) {
+    for (var item of order) {
+      var url = null;
+      if (item[0] == '^') {
+        var dependency = item.slice(1);
+        var resource = resources.get(dependency);
+        url = resource.getUrl();
+      } else {
+        url = item;
+      }
+
+      if (isArray(url)) {
+        urls = urls.concat(url);
+      } else {
+        urls.push(url);
+      }
+    }
+  } else {
+    urls = originalResource.getUrl();
+  }
+
+  return urls;
+}
 
 
 function getDefaults(src, dest) {
   return ObjectDescription.create({
+    'src': src,
+    'dest': dest,
     'resources': {
-      'index': join(src, '/index.js')
+      'index': {
+        src: 'index.html'
+      },
+      'js': {
+        src: [
+          'js/index.js'
+        ]
+      },
+      'css': {
+        src: [
+          'less/index.less'
+        ]
+      }
     },
+    //'style': ['less'],
+    //'scripts': ['js'],
+    'source-maps': true,
     //'server.application': 'webpack-server',
     //'server.port': 9001,
     //'server.host': 'localhost',
 
     'builder': 'webpack',
-    'entry.js/index-build': join(src, '/index.js'),
+    //'entry.js/index-build': join(src, '/index.js'),
+
 
     //'output': 'index-build.js',
 
     'loaders.babel': join(src, '.+\.js$'),
-    'loaders.yaml':  join(src, '.+\.yml$'),
-    'loaders.html':  join(src, '.+\.html$'),
-    'loaders.json':  join(src, '.+\.json$'),
-    'loaders.jade':  join(src, '.+\.jade'),
+    'loaders.yaml': join(src, '.+\.yml$'),
+    'loaders.html': join(src, '.+\.html$'),
+    'loaders.json': join(src, '.+\.json$'),
+    'loaders.jade': join(src, '.+\.jade'),
 
     'server': 'webpack',
     'host': 'localhost',
@@ -46,6 +89,12 @@ function getDefaults(src, dest) {
     'livereload': 35729
   });
 }
+
+var local = {
+  config: Symbol('config'),
+  resources: Symbol('resources'),
+  builder: Symbol('builder')
+};
 
 export default class Sintez {
   constructor(config) {
@@ -56,14 +105,10 @@ export default class Sintez {
     }
 
     var defaultConfig = getDefaults(config.src, config.dest);
-    this[local.config] = Object.assign({}, defaultConfig, config);
+    this[local.config] = merge(defaultConfig, config);
   }
 
   static loadYml(configPath) {
-    if (!existsSync(configPath)) {
-      throw new Error(`Sintez config "${configPath}" does not exist"`);
-    }
-
     if (!existsSync(configPath)) {
       throw new Error(`Sintez config "${configPath}" does not exist"`);
     }
@@ -111,13 +156,17 @@ export default class Sintez {
     return this[local.config];
   }
 
+  addResource(key, resource) {
+
+  }
+
   getResources() {
     if (!this[local.resources]) {
       var src = this.getSrc();
       var dest = this.getDest();
       var resourcesConfig = this.get('resources');
 
-      this[local.resources] =  new Resources(src, dest, resourcesConfig);
+      this[local.resources] = new Resources(src, dest, resourcesConfig);
     }
 
     return this[local.resources];
@@ -125,14 +174,20 @@ export default class Sintez {
 
   getBuilder() {
     if (!this[local.builder]) {
+      var resources = this.getResources();
+      var js = resources.get('js');
+
       this[local.builder] = new Builder({
         builder: this.get('builder'),
         src: this.getSrc(),
         dest: this.getDest(),
-        output: this.get('output'),
-        entry: this.get('entry'),
-        loaders:  this.get('loaders'),
-        //chunks: this.get('chunks'),
+
+        js,
+        //output: js.getOriginalDest(),
+        //entry: js.getOriginalSrc(),
+
+        loaders: this.get('loaders'),
+
         alias: this.get('alias'),
         resolve: this.get('resolve')
       });
@@ -144,6 +199,7 @@ export default class Sintez {
   getServer() {
     if (!this[local.server]) {
       var resources = this.getResources();
+      var index = resources.get('index');
 
       this[local.server] = new Server({
         builder: this.getBuilder(),
@@ -155,7 +211,7 @@ export default class Sintez {
         host: this.get('host'),
         port: this.get('port'),
 
-        index: resources.getDest('index')
+        index: index.getDest()
       });
     }
 
@@ -176,5 +232,17 @@ export default class Sintez {
 
   getSrc() {
     return this.get('src');
+  }
+
+  // ------------ OUTPUT --------------
+
+  getOutputScripts() {
+    var resources = this.getResources();
+    return getOrderedUrls('js', resources);
+  }
+
+  getOutputStyles() {
+    var resources = this.getResources();
+    return getOrderedUrls('css', resources);
   }
 }

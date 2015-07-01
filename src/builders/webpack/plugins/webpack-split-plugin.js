@@ -1,70 +1,57 @@
-export default class WebpackSplitPlugin {
-  constructor() {
-    //this[local.counter] = 1;
-    //this[local.lastBuildFailed] = false;
+import isArray from 'lodash/lang/isArray';
+import values from 'lodash/object/values';
+
+
+export default class SplitByPathPlugin {
+  constructor(options) {
+    this.buckets = [];
+    for (var bucket of options) {
+      var paths = null;
+      if (isArray(bucket.path)) {
+        paths = bucket.path;
+      } else {
+        paths = [bucket.path];
+      }
+
+      this.buckets.push({
+        name: bucket.name,
+        path: paths.map(path => new RegExp(path))
+      });
+    }
   }
 
   apply(compiler) {
-    //var options = this.options;
-    var options = {
-      def: 'code',
-      buckets: [{
-        name: 'vendor',
-        regex: /vendor\//
-      }, {
-        name: 'deps',
-        regex: /deps\//
-      }, {
-        name: 'app',
-        regex: /app\//
-      }]
-    };
-
-    function findMatchingBucket(chunk) {
+    var match = (chunk) => {
       var match = null;
-
-      for (var bucket of options.buckets) {
-        if (bucket.regex.test(chunk.rawRequest)) {
-          match = bucket;
-          break;
-        }
-      }
-
-      if (!match) {
-        match = {
-          name: options.def
-        }
-      }
+      this.buckets.some(bucket => {
+        return bucket.path.some(path => {
+          if (path.test(chunk.userRequest)) {
+            match = bucket;
+            return true;
+          }
+        });
+      });
 
       return match;
-    }
+    };
 
-    compiler.plugin("compilation", function(compilation) {
-      var pathChunks = {};
+    compiler.plugin('compilation', compilation => {
+      var splitedChunks = {};
 
-      // Find the chunk which was already created by this bucket.
-      // This is also the grossest function name I've written today.
-      function bucketToChunk(bucket) {
-        return pathChunks[bucket.name];
-      }
+      compilation.plugin('optimize-chunks', function(chunks) {
+        var filtered = chunks.slice().filter(chunk => chunk.entry);
 
-      compilation.plugin("optimize-chunks", function (chunks) {
-        //var addChunk = this.addChunk.bind(this);
+        var waitForRemove = [];
 
-        for (var chunk of chunks) {
+        for (var chunk of filtered) {
           for (var mod of chunk.modules) {
-            if (mod.rawRequest !== undefined) {
-              var bucket = findMatchingBucket(mod);
-
-              var newChunk = null;
-
-              //if (!bucket) {
-              // it stays in the original bucket
-              //return;
-              //}
-
-              if (!(newChunk = bucketToChunk(bucket))) {
-                newChunk = pathChunks[bucket.name] = this.addChunk(bucket.name);
+            var bucket = match(mod);
+            if (bucket) {
+              var newChunk = splitedChunks[bucket.name];
+              if (!newChunk) {
+                newChunk = this.addChunk(bucket.name);
+                //newChunk.parents = [chunk];
+                splitedChunks[bucket.name] = newChunk;
               }
 
               // add the module to the new chunk
@@ -72,26 +59,61 @@ export default class WebpackSplitPlugin {
               mod.addChunk(newChunk);
 
               // remove it from the existing chunk
-              mod.removeChunk(chunk);
+              waitForRemove.push(mod);
+            } else {
+              //console.log('original', mod.userRequest);
             }
           }
 
+          for (var removeMod of waitForRemove) {
+            chunk.removeModule(removeMod);
+            removeMod.removeChunk(chunk);
+          }
 
-          options.buckets
-            .map(bucketToChunk)
-            .filter(Boolean)
-            .concat(chunk)
-            .forEach(function(chunk, index, allChunks) { // allChunks = [bucket0, bucket1, .. bucketN, orig]
-              if (index) { // not the first one, they get the first chunk as a parent
-                chunk.parents = [allChunks[0]];
-              } else { // the first chunk, it gets the others as 'sub' chunks
-                chunk.chunks = allChunks.slice(1);
-              }
-              chunk.initial = chunk.entry = !index;
-            });
+          //chunk.entry = chunk.initial = true;
+
+
+          /**
+           *
+           * Entry chunk
+           * An entry chunk contains the runtime plus a bunch of modules.
+           * If the chunk contains the module 0 the runtime executes it.
+           * If not, it waits for chunks that contains the module 0 and executes it (every time when there is a chunk
+           * with a module 0).
+           *
+           * Normal chunk
+           * A normal chunk contains no runtime.
+           * It only contains a bunch of modules.
+           * The structure depends on the chunk loading algorithm.
+           * I. e. for jsonp the modules are wrapped in a jsonp callback function. The chunk also contains a list of
+           * chunk id that it fulfills.
+           *
+           * Initial chunk (non-entry)
+           * An initial chunk is a normal chunk.
+           * The only difference is that optimization treats it as more important because it counts toward the initial
+           * loading time (like entry chunks). That chunk type can occur in combination with the CommonsChunkPlugin.
+           */
+
+          var all = values(splitedChunks);
+          all.push(chunk);
+
+          var main = all.shift();
+          //var main = chunk;
+
+          main.entry = true;
+          main.initial = true;
+          main.chunks = all;
+
+          for (var resultChunk of all) {
+            //get the first chunk as a parent
+            resultChunk.parents = [main];
+            resultChunk.entry = false;
+            resultChunk.initial = false;
+          }
         }
-
-      });
+      }, this);
     });
   }
 }
+
+
