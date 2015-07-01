@@ -32,7 +32,9 @@ export default class WebpackServer extends BaseServer {
       quiet: true,
       noInfo: true,
       lazy: false,
-      watchDelay: true,
+      watchOptions: {
+        aggregateTimeout: 300
+      },
       headers: {
         'X-Custom-Header': 'yes'
       },
