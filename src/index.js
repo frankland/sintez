@@ -4,7 +4,7 @@ import { argv } from 'yargs';
 import Sintez from './components/sintez';
 
 var configName = 'sintez';
-var cliName = argv['cong'];
+var cliName = argv['conf'];
 
 if (cliName) {
   configName = cliName;
