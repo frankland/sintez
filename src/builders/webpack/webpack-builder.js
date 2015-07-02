@@ -26,9 +26,10 @@ export default class WebpackBuilder extends BaseBuilder {
     var src = this.config.src;
     var dest = this.config.dest;
 
-
-    var bail = false;
-    var devtool = 'eval';
+    var debug = !!this.config.debug;
+    var bail = debug;
+    var devtool = this.config.devtool;
+    var target = this.config.target;
 
     var js = this.config.js;
     var jsSource = js.getSrc();
@@ -53,7 +54,9 @@ export default class WebpackBuilder extends BaseBuilder {
     var config = {
       bail,
       devtool,
+      target,
       output,
+      debug,
       plugins: [],
       module: {}
     };

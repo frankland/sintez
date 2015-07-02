@@ -26,12 +26,21 @@ export default class LoadersConverter extends BaseConverter {
         }
 
         var webpackLoader = webpackLoaders.get(loader);
-        var pattern = loaders[loader];
 
-        converted.push({
-          test: new RegExp(pattern.replace(/\//g, sep)),
-          loader: webpackLoader
-        })
+        var loaderPattern = loaders[loader];
+        var patterns = null;
+        if (isArray(loaderPattern)) {
+          patterns = loaderPattern;
+        } else {
+          patterns = [loaderPattern];
+        }
+
+        for (var pattern of patterns) {
+          converted.push({
+            test: new RegExp(pattern.replace(/\//g, sep)),
+            loader: webpackLoader
+          });
+        }
       }
     }
 

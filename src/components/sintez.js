@@ -49,21 +49,21 @@ function getDefaults(src, dest) {
   return ObjectDescription.create({
     'src': src,
     'dest': dest,
-    'resources': {
-      'index': {
-        src: 'index.html'
-      },
-      'js': {
-        src: [
-          'js/index.js'
-        ]
-      },
-      'css': {
-        src: [
-          'less/index.less'
-        ]
-      }
-    },
+    //'resources': {
+    //  'index': {
+    //    src: 'index.html'
+    //  },
+    //  'js': {
+    //    src: [
+    //      'js/index.js'
+    //    ]
+    //  },
+    //  'css': {
+    //    src: [
+    //      'less/index.less'
+    //    ]
+    //  }
+    //},
     //'style': ['less'],
     //'scripts': ['js'],
     'source-maps': true,
@@ -73,15 +73,28 @@ function getDefaults(src, dest) {
 
     'builder': 'webpack',
     //'entry.js/index-build': join(src, '/index.js'),
-
+    debug: false,
 
     //'output': 'index-build.js',
+    'errorDetails': true,
+    'loaders.babel': [
+      join(src, '.+\.js$')
+    ],
+    'loaders.yaml': [
+      join(src, '.+\.yml$')
+    ],
+    'loaders.html': [
+      join(src, '.+\.html$')
+    ],
+    'loaders.json': [
+      join(src, '.+\.json$')
+    ],
+    'loaders.jade': [
+      join(src, '.+\.jade')
+    ],
 
-    'loaders.babel': join(src, '.+\.js$'),
-    'loaders.yaml': join(src, '.+\.yml$'),
-    'loaders.html': join(src, '.+\.html$'),
-    'loaders.json': join(src, '.+\.json$'),
-    'loaders.jade': join(src, '.+\.jade'),
+    'target': 'web',
+    'devtool': 'eval',
 
     'server': 'webpack',
     'host': 'localhost',
@@ -185,7 +198,7 @@ export default class Sintez {
         js,
         //output: js.getOriginalDest(),
         //entry: js.getOriginalSrc(),
-
+        debug: this.get('debug'),
         loaders: this.get('loaders'),
 
         alias: this.get('alias'),
@@ -238,11 +251,21 @@ export default class Sintez {
 
   getOutputScripts() {
     var resources = this.getResources();
-    return getOrderedUrls('js', resources);
+    var output = null;
+
+    if (resources.has('js')) {
+      output = getOrderedUrls('js', resources);
+    }
+    return output;
   }
 
   getOutputStyles() {
     var resources = this.getResources();
-    return getOrderedUrls('css', resources);
+    var output = null;
+
+    if (resources.has('css')) {
+      output = getOrderedUrls('css', resources);
+    }
+    return output;
   }
 }
