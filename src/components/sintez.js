@@ -9,6 +9,8 @@ import ObjectDescription from 'object-description';
 import getter from 'lodash/object/get';
 import merge from 'lodash/object/merge';
 import isArray from 'lodash/lang/isArray';
+import isObject from 'lodash/lang/isObject';
+import cloneDeep from 'lodash/lang/cloneDeep';
 
 import Resources from './resoruces';
 import Builder from './builder';
@@ -49,34 +51,9 @@ function getDefaults(src, dest) {
   return ObjectDescription.create({
     'src': src,
     'dest': dest,
-    //'resources': {
-    //  'index': {
-    //    src: 'index.html'
-    //  },
-    //  'js': {
-    //    src: [
-    //      'js/index.js'
-    //    ]
-    //  },
-    //  'css': {
-    //    src: [
-    //      'less/index.less'
-    //    ]
-    //  }
-    //},
-    //'style': ['less'],
-    //'scripts': ['js'],
     'source-maps': true,
-    //'server.application': 'webpack-server',
-    //'server.port': 9001,
-    //'server.host': 'localhost',
-
     'builder': 'webpack',
-    //'entry.js/index-build': join(src, '/index.js'),
-    debug: false,
-
-    //'output': 'index-build.js',
-    'errorDetails': true,
+    'debug': false,
     'loaders.babel': [
       join(src, '.+\.js$')
     ],
@@ -92,15 +69,32 @@ function getDefaults(src, dest) {
     'loaders.jade': [
       join(src, '.+\.jade')
     ],
-
     'target': 'web',
     'devtool': 'eval',
-
     'server': 'webpack',
     'host': 'localhost',
     'port': 9001,
     'livereload': 35729
   });
+}
+
+function normalizeConfig(config) {
+  var normalized = cloneDeep(config);
+  var loaders = normalized.loaders;
+  if (loaders) {
+    var normalizedLoaders = {};
+    for (var loader of Object.keys(loaders)) {
+      if (!isArray(loaders[loader])) {
+        normalizedLoaders[loader] = [loaders[loader]];
+      } else {
+        normalizedLoaders[loader] = loaders[loader];
+      }
+    }
+
+    normalized.loaders = normalizedLoaders;
+  }
+
+  return normalized;
 }
 
 var local = {
@@ -129,17 +123,18 @@ export default class Sintez {
     var configYml = readFileSync(configPath);
 
     var config = JSONfromYml(configYml);
+    var normalized = normalizeConfig(config);
 
-    if (config.extend) {
+    if (normalized.extend) {
       var currentDir = dirname(configPath);
-      var parentConfigPath = join(currentDir, config.extend);
+      var parentConfigPath = join(currentDir, normalized.extend);
 
       var parentConfig = Sintez.loadYml(parentConfigPath);
 
-      config = merge(parentConfig, config);
+      normalized = merge(parentConfig, normalized);
     }
 
-    return config;
+    return normalized;
   }
 
   static fromPath(configPath) {
