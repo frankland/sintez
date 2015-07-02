@@ -1,5 +1,6 @@
 import isArray from 'lodash/lang/isArray';
 import values from 'lodash/object/values';
+import { sep } from '../../../utils/helpers';
 
 
 export default class SplitByPathPlugin {
@@ -15,7 +16,7 @@ export default class SplitByPathPlugin {
 
       this.buckets.push({
         name: bucket.name,
-        path: paths.map(path => new RegExp(path))
+        path: paths.map(path => new RegExp(path.replace(/\//g, sep)))
       });
     }
   }
