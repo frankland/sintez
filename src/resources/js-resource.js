@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from '../utils/path';
 import { sync as globSync } from 'glob';
 
 import isArray from 'lodash/lang/isArray';

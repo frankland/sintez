@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from '../utils/path';
 
 import { sync as globSync } from 'glob';
 
