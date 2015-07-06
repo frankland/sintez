@@ -251,7 +251,9 @@ export default class Sintez {
     if (resources.has('js')) {
       output = getOrderedUrls('js', resources);
     }
-    return output;
+
+
+    return isArray(output) ? output : [output];
   }
 
   getOutputStyles() {
@@ -261,6 +263,7 @@ export default class Sintez {
     if (resources.has('css')) {
       output = getOrderedUrls('css', resources);
     }
-    return output;
+
+    return isArray(output) ? output : [output];
   }
 }
