@@ -180,47 +180,63 @@ export default class Sintez {
     return this[local.resources];
   }
 
+  createBuilder(customOptions = {}) {
+    var resources = this.getResources();
+    var js = resources.get('js');
+
+    var configOptions = {
+      builder: this.get('builder'),
+      src: this.getSrc(),
+      dest: this.getDest(),
+
+      js,
+      //output: js.getOriginalDest(),
+      //entry: js.getOriginalSrc(),
+      debug: this.get('debug'),
+      loaders: this.get('loaders'),
+
+      alias: this.get('alias'),
+      resolve: this.get('resolve')
+    };
+
+    var options = Object.assign({}, configOptions, customOptions);
+
+    return new Builder(options);
+  }
+
   getBuilder() {
     if (!this[local.builder]) {
-      var resources = this.getResources();
-      var js = resources.get('js');
-
-      this[local.builder] = new Builder({
-        builder: this.get('builder'),
-        src: this.getSrc(),
-        dest: this.getDest(),
-
-        js,
-        //output: js.getOriginalDest(),
-        //entry: js.getOriginalSrc(),
-        debug: this.get('debug'),
-        loaders: this.get('loaders'),
-
-        alias: this.get('alias'),
-        resolve: this.get('resolve')
-      });
+      this[local.builder] = this.createBuilder();
     }
 
     return this[local.builder];
   }
 
+  createServer(customOptions = {}) {
+    var resources = this.getResources();
+    var index = resources.get('index');
+
+    var configOptions = {
+      builder: this.getBuilder(),
+      server: this.get('server'),
+
+      src: this.getSrc(),
+      dest: this.getDest(),
+
+      host: this.get('host'),
+      port: this.get('port'),
+
+      index: index.getDest()
+    };
+
+    var options = Object.assign({}, configOptions, customOptions);
+
+    return new Server(options);
+  }
+
   getServer() {
     if (!this[local.server]) {
-      var resources = this.getResources();
-      var index = resources.get('index');
-
-      this[local.server] = new Server({
-        builder: this.getBuilder(),
-        server: this.get('server'),
-
-        src: this.getSrc(),
-        dest: this.getDest(),
-
-        host: this.get('host'),
-        port: this.get('port'),
-
-        index: index.getDest()
-      });
+      this[local.server] = this.createServer();
     }
 
     return this[local.server];
