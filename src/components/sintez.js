@@ -195,6 +195,8 @@ export default class Sintez {
       debug: this.get('debug'),
       loaders: this.get('loaders'),
 
+      devtool: this.get('devtool'),
+
       alias: this.get('alias'),
       resolve: this.get('resolve')
     };
