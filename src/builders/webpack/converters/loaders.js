@@ -14,6 +14,7 @@ webpackLoaders.set('html', 'html-loader');
 webpackLoaders.set('json', 'json-loader');
 webpackLoaders.set('jade', 'jade-loader');
 webpackLoaders.set('script', 'script-loader');
+webpackLoaders.set('expose', 'expose-loader');
 
 export default class LoadersConverter extends BaseConverter {
   getConfig(loaders) {
@@ -36,9 +37,14 @@ export default class LoadersConverter extends BaseConverter {
         }
 
         for (var pattern of patterns) {
+          var config = pattern.replace(/\//g, sep).split('?');
+          var test = config.shift();
+          var query = config.shift();
+
           converted.push({
-            test: new RegExp(pattern.replace(/\//g, sep)),
-            loader: webpackLoader
+            test: new RegExp(test),
+            loader: webpackLoader,
+            query: query
           });
         }
       }
