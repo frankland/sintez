@@ -41,7 +41,7 @@ export default class Log {
   log(message) {
     if (isEnabled) {
       var coloring = this.coloring;
-      var completeMessage = message.replace(/((_)([^_]+)(_))/g, coloring('$3'));
+      var completeMessage = message.replace(/((%)([^%]+)(%))/g, coloring('$3'));
       gutil.log(`${coloring(this.task)} ${completeMessage}`);
     }
   }

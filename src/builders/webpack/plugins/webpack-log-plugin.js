@@ -20,6 +20,8 @@ export default class WebpackLogPlugin {
       var time =  (stats.endTime - stats.startTime) / 1000;
       var scripts = stats.compilation.fileDependencies;
 
+      var warnings = stats.compilation.warnings;
+
       if (stats.compilation.errors && stats.compilation.errors.length)
       {
         this[local.lastBuildFailed] = true;
@@ -34,7 +36,8 @@ export default class WebpackLogPlugin {
         this.emit('build.end', {
           counter,
           time,
-          scripts
+          scripts,
+          warnings
         });
       }
     });
