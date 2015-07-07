@@ -59,21 +59,25 @@ describe('Resources component', () => {
 
   it('should calculate mask automatically', () => {
     var less = resources.get('less');
-    expect(less.getMask()).to.be.eql('test/test-resources/src/less/index.less');
+    expect(less.getMask()).to.be.eql([
+      './test/test-resources/src/less/index.less'
+    ]);
   });
 
   it('should calculate mask automatically if src is array', () => {
     var less = resources.get('less-array');
 
     expect(less.getMask()).to.be.eql([
-      'test/test-resources/src/less/index.less',
-      'test/test-resources/src/less/grid.less'
+      './test/test-resources/src/less/index.less',
+      './test/test-resources/src/less/grid.less'
     ]);
   });
 
   it('should return correct mask', () => {
     var less = resources.get('less-with-mask');
-    expect(less.getMask()).to.be.eql('test/test-resources/src/less/**/*.less');
+    expect(less.getMask()).to.be.eql([
+      'test/test-resources/src/less/**/*.less'
+    ]);
   });
 
   it('should return correct mask if mask described as array', () => {
@@ -157,7 +161,7 @@ describe('Resources component', () => {
 
   it('should return correct url', () => {
     var less = resources.get('less');
-    expect(less.getUrl()).to.be.eql('ui/index.css');
+    expect(less.getUrl()).to.be.eql('/ui/index.css');
   });
 
   it('should check if url is available', () => {
