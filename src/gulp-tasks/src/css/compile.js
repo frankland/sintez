@@ -16,7 +16,7 @@ export default class LessCompile extends Base {
     var resources = this.getResources();
     var css = resources.get('css');
 
-    var mask = css.getMask();
+    var src = css.getSrc();
 
     var dest = css.getTarget();
     var name = css.getDestName();
@@ -25,7 +25,7 @@ export default class LessCompile extends Base {
       compress: true
     });
 
-    var stream = this.gulp.src(mask)
+    var stream = this.gulp.src(src)
       .pipe(plumber());
 
     if (name) {
@@ -38,7 +38,7 @@ export default class LessCompile extends Base {
       .on('end', () => {
 
         this.logger.updated({
-          src: mask,
+          src: src,
           dest: join(dest, name)
         });
       });

@@ -170,7 +170,13 @@ export default class Resource {
     var mask = null;
 
     if (normalized.mask) {
-      mask = normalized.mask;
+      var src = this[local.src];
+
+      if (isArray(normalized.mask)) {
+        mask = normalized.mask.map(path => join(src, path));
+      } else {
+        mask = join(src, normalized.mask);
+      }
     } else {
       mask = this.getSrc();
     }
