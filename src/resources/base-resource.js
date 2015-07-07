@@ -1,4 +1,6 @@
-import { join, resolve } from '../utils/path';
+import { join } from '../utils/path';
+
+import { joinUrl } from '../utils/helpers';
 
 import { sync as globSync } from 'glob';
 
@@ -16,10 +18,10 @@ var getLocation = (path) => {
   return path.replace(/[^(?:\/|\\)]+$/, '');
 };
 
+
 var normalize = (key, config) => {
   var normalized = {
-    originalArraySource: false,
-    originalArrayMask: false
+    originalArraySource: false
   };
 
   if (!config.src) {
@@ -60,13 +62,11 @@ var normalize = (key, config) => {
   if (config.mask) {
     if (isArray(config.mask)) {
       normalized.mask = config.mask;
-      normalized.originalArrayMask = true;
     } else {
       normalized.mask = [config.mask];
     }
   } else {
-    normalized.originalArrayMask = normalized.originalArraySource;
-    normalized.mask = normalized.src;
+    normalized.mask = null;
   }
 
   normalized.options = config.options || {};
@@ -167,14 +167,12 @@ export default class Resource {
 
   getMask() {
     var normalized = this[local.normalized];
-    var src = this[local.src];
     var mask = null;
 
-    var normalizedMask = normalized.mask.map((path) => join(src, path));
-    if (normalized.originalArrayMask) {
-      mask = normalizedMask;
+    if (normalized.mask) {
+      mask = normalized.mask;
     } else {
-      mask = normalizedMask[0];
+      mask = this.getSrc();
     }
 
     return mask;
@@ -189,7 +187,7 @@ export default class Resource {
     var target = this.getRelativeTarget();
     var destName = this.getDestName();
 
-    return join(target, destName);
+    return joinUrl('/', target, destName);
   }
 
   hasUrl() {

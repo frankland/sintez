@@ -1,3 +1,5 @@
+import { joinUrl } from '../utils/helpers';
+
 import { join } from '../utils/path';
 import { sync as globSync } from 'glob';
 
@@ -78,12 +80,12 @@ export default class JsResoruce extends BaseResource {
     var urls = [];
     if (split) {
       var target = this.getRelativeTarget();
+
       for (var name of Object.keys(split)) {
-        urls.push(join(target, name + '.js'));
+        urls.push(joinUrl('/', target, name + '.js'));
       }
     }
     urls.push(url);
-
 
     return urls;
   }
