@@ -1,6 +1,6 @@
 {
   "name": "sintez",
-  "version": "0.0.53",
+  "version": "0.0.54",
   "description": "Enchanted gulp tasks",
   "main": "index.js",
   "scripts": {
