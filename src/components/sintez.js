@@ -15,6 +15,7 @@ import cloneDeep from 'lodash/lang/cloneDeep';
 import Resources from './resoruces';
 import Builder from './builder';
 import Server from './server';
+import Mocha from './mocha';
 
 
 function getOrderedUrls(original, resources) {
@@ -55,7 +56,8 @@ function getDefaults(src, dest) {
     'builder': 'webpack',
     'debug': false,
     'loaders.babel': [
-      join(src, '.+\.js$')
+      join(src, '.+\.js$'),
+      resolve('tests', '.+\.js$')
     ],
     'loaders.yaml': [
       join(src, '.+\.yml$')
@@ -100,7 +102,8 @@ function normalizeConfig(config) {
 var local = {
   config: Symbol('config'),
   resources: Symbol('resources'),
-  builder: Symbol('builder')
+  builder: Symbol('builder'),
+  tests: Symbol('tests')
 };
 
 export default class Sintez {
@@ -168,13 +171,18 @@ export default class Sintez {
 
   }
 
+  createResources(customOptions = {}) {
+    var src = this.getSrc();
+    var dest = this.getDest();
+    var resourcesConfig = this.get('resources');
+
+    var config = Object.assign({} , resourcesConfig, customOptions);
+    return new Resources(src, dest, config);
+  }
+
   getResources() {
     if (!this[local.resources]) {
-      var src = this.getSrc();
-      var dest = this.getDest();
-      var resourcesConfig = this.get('resources');
-
-      this[local.resources] = new Resources(src, dest, resourcesConfig);
+      this[local.resources] =  this.createResources();
     }
 
     return this[local.resources];
@@ -243,6 +251,22 @@ export default class Sintez {
 
     return this[local.server];
   }
+
+  getTests() {
+    if (!this[local.tests]) {
+      var resources = this.getResources();
+      var tests = resources.get('tests');
+
+      var src = this.getSrc();
+      var dest = this.getDest();
+
+      this[local.tests] = new Mocha(src, dest, tests);
+    }
+
+    return this[local.tests];
+  }
+
+  // --------------------------------
 
   get(key) {
     return getter(this[local.config], key);

@@ -43,26 +43,7 @@ export default class HtmlCompile extends Base {
     return options;
   }
 
-  getName() {
-    var resources = this.getResources();
-    var index = resources.get('index');
-    return index.getDestName('index');
-  }
-
-  run(customResource, customOptions) {
-    var options = this.getOptions();
-    if (customOptions) {
-      options = Object.assign({}, options, customOptions);
-    }
-
-    var resourceKey = 'index';
-    if (customResource) {
-      resourceKey = customResource;
-    }
-
-    var resources = this.getResources();
-    var resource = resources.get(resourceKey);
-
+  compile(resource, options) {
     var src = resource.getSrc();
     var dest = resource.getTarget();
     var name = resource.getDestName();
@@ -89,5 +70,21 @@ export default class HtmlCompile extends Base {
           dest: join(dest, name)
         });
       });
+  }
+
+  compileWithDefaults(resource, customOptions) {
+    var options = this.getOptions();
+    if (customOptions) {
+      options = Object.assign({}, options, customOptions);
+    }
+
+    return this.compile(resource, options);
+  }
+
+  run() {
+    var resources = this.getResources();
+    var resource = resources.get('index');
+
+    return this.compileWithDefaults(resource);
   }
 }

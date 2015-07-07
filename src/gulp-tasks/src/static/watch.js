@@ -18,12 +18,12 @@ export default class StaticWatch extends Base {
     var copy = this.sintez.get('copy') || [];
 
     for (let key of copy) {
-      var resource = resources.get(key);
+      let resource = resources.get(key);
       var mask = resource.getMask();
 
-      this.copier.copy(key);
+      this.copier.copy(resource);
       this.gulp.watch(mask, () => {
-        return this.copier.copy(key);
+        return this.copier.copy(resource);
       });
     }
   }

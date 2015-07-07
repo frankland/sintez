@@ -5,9 +5,7 @@ export default class Server extends Base {
     return 'server';
   }
 
-  run() {
-    var server = this.sintez.getServer();
-    var builder = this.sintez.getBuilder();
+  start(builder, server) {
     var applicationBuilder = builder.getApplicationBuilder();
 
     applicationBuilder.on('build.start', () => {
@@ -22,8 +20,7 @@ export default class Server extends Base {
       this.logger.log(message);
 
       var warnings = params.warnings;
-      if (warnings) {
-
+      if (warnings && !!warnings.length) {
         this.logger.log('------------------');
         this.logger.log('*** %WARNINGS% ***');
         for (var warning of warnings) {
@@ -47,5 +44,12 @@ export default class Server extends Base {
     server.run(() => {
       this.logger.log(`run at %http://${config.host}:${config.port}%`);
     });
+  }
+
+  run(done) {
+    var server = this.sintez.getServer();
+    var builder = this.sintez.getBuilder();
+
+    this.start(builder, server);
   }
 }

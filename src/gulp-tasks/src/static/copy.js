@@ -12,10 +12,7 @@ export default class StaticCopy extends Base {
     return 'static:copy';
   }
 
-  copy(key) {
-    var resources = this.getResources();
-    var resource = resources.get(key);
-
+  copy(resource) {
     var mask = resource.getMask();
     var dest = resource.getTarget();
 
@@ -47,11 +44,12 @@ export default class StaticCopy extends Base {
 
   run() {
     var copy = this.sintez.get('copy') || [];
+    var resources = this.getResources();
 
     var streams = null;
-
     for (var key of copy) {
-      var stream = this.copy(key);
+      var resource = resources.get(key);
+      var stream = this.copy(resource);
 
       if (!streams) {
         streams = mergeStreams(stream);

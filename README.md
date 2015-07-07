@@ -14,3 +14,7 @@ Sintez
 - [X] rename builder and server methods!
 - [ ] check if port already in use for server
 - [X] code splitting
+- [x] tests
+- [ ] redev tests - use protractor for test running. + support diff. browsers
+- [ ] redev gulp tasks - depends on Resource obj instead of key
+- [ ] gulp check - check all needed resource keys.

@@ -19,6 +19,13 @@ import ResourcesInfo from './src/info/resources';
 import ServerInfo from './src/info/server';
 import SintezInfo from './src/info/sintez';
 
+import TestsHtmlCompile from './src/tests/mocha/copmile-html';
+import TestsResources from './src/tests/mocha/test-resources';
+import TestsBuild from './src/tests/mocha/build';
+import Tests from './src/tests/mocha/run';
+
+import TestsAll from './src/tests-all';
+
 import Dev from './src/dev';
 import All from './src/all';
 
@@ -50,4 +57,11 @@ export default (gulp) => {
 
   taskManager.add(new Dev(gulp, sintez));
   taskManager.add(new All(gulp, sintez));
+
+
+  taskManager.add(new Tests(gulp, sintez));
+  taskManager.add(new TestsResources(gulp, sintez));
+  taskManager.add(new TestsHtmlCompile(gulp, sintez));
+  taskManager.add(new TestsBuild(gulp, sintez));
+  taskManager.add(new TestsAll(gulp, sintez));
 };

@@ -17,18 +17,18 @@ var resolvedDestWithChunks = resolve(sintezWithChunks.getDest());
 describe('Webpack builder', () => {
   it('should return correct output scripts if output path is defined', () => {
     expect(sintez.getOutputScripts()).to.eql([
-      '/js/node_modules.js',
-      '/js/vendor.js',
-      '/js/deps.js',
-      '/js/bootstrap.js',
-      '/js/app.js',
-      '/js/build.js'
+      'js/node_modules.js',
+      'js/vendor.js',
+      'js/deps.js',
+      'js/bootstrap.js',
+      'js/app.js',
+      'js/build.js'
     ]);
   });
 
   it('should return correct output scripts if output path is not defined', () => {
     expect(sintezWithChunks.getOutputScripts()).to.eql([
-      '/js/build.js'
+      'js/build.js'
     ]);
   });
 

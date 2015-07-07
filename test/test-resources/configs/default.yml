@@ -27,7 +27,7 @@ resources:
     src:
       - less/index.less
       - less/grid.less
-    dest: ui/index.css
+    dest: /ui/index.css
 
   less-array-without-dest:
     src:
@@ -46,7 +46,7 @@ resources:
 
   assets:
     mask: assets/**/*
-    dest: assets/
+    dest: /assets/
 
   specific-image:
     src: assets/1.png

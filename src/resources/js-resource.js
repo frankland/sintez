@@ -79,7 +79,7 @@ export default class JsResoruce extends BaseResource {
     if (split) {
       var target = this.getRelativeTarget();
       for (var name of Object.keys(split)) {
-        urls.push('/' + join(target, name + '.js'));
+        urls.push(join(target, name + '.js'));
       }
     }
     urls.push(url);

@@ -157,7 +157,7 @@ describe('Resources component', () => {
 
   it('should return correct url', () => {
     var less = resources.get('less');
-    expect(less.getUrl()).to.be.eql('/ui/index.css');
+    expect(less.getUrl()).to.be.eql('ui/index.css');
   });
 
   it('should check if url is available', () => {

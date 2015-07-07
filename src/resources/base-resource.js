@@ -1,4 +1,4 @@
-import { join } from '../utils/path';
+import { join, resolve } from '../utils/path';
 
 import { sync as globSync } from 'glob';
 
@@ -99,9 +99,9 @@ var collectScripts = (paths, resource) => {
 
 var local = {
   normalized: Symbol('normalized'),
-  src: Symbol('src'),
-  key: Symbol('key'),
-  dest: Symbol('dest')
+  src: 'src',
+  key: 'key',
+  dest: 'dest'
 };
 
 
@@ -186,11 +186,10 @@ export default class Resource {
       throw new Error(`Can not calculate url because destination name is not describe for "${key}".`);
     }
 
-    var normalized = this[local.normalized];
     var target = this.getRelativeTarget();
     var destName = this.getDestName();
 
-    return '/' + join(target, destName);
+    return join(target, destName);
   }
 
   hasUrl() {
