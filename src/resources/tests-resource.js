@@ -13,7 +13,6 @@ export default class TestsResource extends JsResource {
     var testDest = join(dest, 'tests');
 
     var options = config.options || {};
-    var environment = options.environment;
 
     var testSrc = null;
     if (isArray(config.src)) {
@@ -23,9 +22,12 @@ export default class TestsResource extends JsResource {
     }
 
     var absSrc = resolve(src);
+    var testsDir = 'tests';
     testSrc = testSrc.map((path) => {
-      return relative(absSrc, resolve('tests', path));
+      return relative(absSrc, resolve(testsDir, path));
     });
+
+    var environment = options.environment;
 
     if (environment) {
       if (isArray(environment)) {

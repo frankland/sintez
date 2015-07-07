@@ -21,9 +21,7 @@ export default class BuildTests extends Base {
   }
 
   run(done) {
-
     var builder = this.createBuilder();
-
     builder.run((err) => {
       done(err);
     });

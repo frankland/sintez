@@ -6,7 +6,6 @@ import Server from '../../server';
 
 import Base from '../../../base-task';
 
-
 export default class Tests extends Base {
   constructor(gulp ,sintez) {
     super(gulp, sintez);

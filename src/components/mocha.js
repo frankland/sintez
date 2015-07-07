@@ -16,14 +16,14 @@ export default class Tests {
 
     this[local.tests] = tests;
 
-    var index = resolve(__dirname, '../assets/index-tests.html');
-    var absSrc = resolve(src);
-
     var testDest = tests.getTestDest();
     var resources = new Resources(src, testDest, {});
 
+    var absSrc = resolve(src);
+
+    var absTestIndex = resolve(__dirname, '../assets/index-tests.html');
     this[local.index] = resources.create('mocha.index', {
-      src: path.relative(absSrc, index),
+      src: path.relative(absSrc, absTestIndex),
       dest: '/index.html'
     });
 
