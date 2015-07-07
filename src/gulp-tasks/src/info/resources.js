@@ -1,5 +1,7 @@
 import isArray from 'lodash/lang/isArray';
 
+import { argv } from 'yargs';
+
 import pretty from 'prettyjson';
 
 import Table from 'cli-table';
@@ -10,6 +12,7 @@ import Base from '../../base-task';
 
 import { toUnifiedPath } from '../../../utils/helpers';
 
+var selected = argv['r'];
 export default class ResourcesInfo extends Base {
   getDefaultTaskName() {
     return 'info:resources';
@@ -25,6 +28,10 @@ export default class ResourcesInfo extends Base {
     });
 
     for (var key of Object.keys(config)) {
+      if (selected && selected != key) {
+        continue;
+      }
+
       var item = [
         gutil.colors.green(key)
       ];
