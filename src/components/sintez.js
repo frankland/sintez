@@ -52,6 +52,7 @@ function getDefaults(src, dest) {
   return ObjectDescription.create({
     'src': src,
     'dest': dest,
+    'experimental': false,
     'source-maps': true,
     'builder': 'webpack',
     'debug': false,
@@ -196,7 +197,7 @@ export default class Sintez {
       builder: this.get('builder'),
       src: this.getSrc(),
       dest: this.getDest(),
-
+      experimental: this.get('experimental'),
       js,
       //output: js.getOriginalDest(),
       //entry: js.getOriginalSrc(),

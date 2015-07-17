@@ -31,6 +31,8 @@ export default class WebpackBuilder extends BaseBuilder {
     var devtool = this.config.devtool;
     var target = this.config.target;
 
+    var experimental = this.config.experimental;
+
     var js = this.config.js;
     var jsSource = js.getSrc();
     var jsOutput = js.getOriginalDest();
@@ -39,7 +41,7 @@ export default class WebpackBuilder extends BaseBuilder {
     var entryConverter = new EntryConverter(src, dest);
     var entry = entryConverter.getConfig(jsSource, jsOutput);
     var loadersConverter = new LoadersConverter(src, dest);
-    var loaders = loadersConverter.getConfig(this.config.loaders);
+    var loaders = loadersConverter.getConfig(this.config.loaders, experimental);
 
     var outputConverter = new OutputConverter(src, dest);
     var output = outputConverter.getConfig();
