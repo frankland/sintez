@@ -39,7 +39,7 @@ export default class LessCompile extends Base {
 
         this.logger.updated({
           src: src,
-          dest: join(dest, name)
+          dest: name ? join(dest, name) : dest
         });
       });
   }
