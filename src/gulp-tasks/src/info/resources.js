@@ -57,14 +57,10 @@ export default class ResourcesInfo extends Base {
       item.push(copy.indexOf(key) != -1 ? '+': '-');
 
       // ----- url -------
-      var resourceUrl = null;
-      if (resource.hasUrl()) {
-        var url = resource.getUrl();
-        resourceUrl =  pretty.render(url);
-      } else {
-        resourceUrl = '-';
-      }
-      item.push(resourceUrl);
+      //var resourceUrl = null;
+      var url = resource.getUrl();
+      var resourceUrl =  pretty.render(url);
+      item.push(resourceUrl );
 
       // ----- options -------
       var resourceOptions = null;

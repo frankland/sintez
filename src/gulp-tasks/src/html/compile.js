@@ -1,4 +1,5 @@
 import { join, extname } from '../../../utils/path';
+import isEmpty from 'lodash/lang/isEmpty';
 
 import plumber from 'gulp-plumber';
 
@@ -29,7 +30,13 @@ export default class HtmlCompile extends Base {
       }
     };
 
-    options.css = this.sintez.getOutputStyles();
+    var css = this.sintez.getOutputStyles();
+    if (!isEmpty(css)) {
+      options.css = {
+        src: css,
+        tpl: '<link href="%s" rel="stylesheet"/>'
+      }
+    }
     options.js = this.sintez.getOutputScripts();
 
     if (resources.has('favicon')) {

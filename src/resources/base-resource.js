@@ -184,25 +184,55 @@ export default class Resource {
     return mask;
   }
 
+  /**
+   * TODO: redevelop this function.
+   * @returns {*}
+   */
   getUrl() {
-    if (!this.hasUrl()) {
-      var key = this[local.key];
-      throw new Error(`Can not calculate url because destination name is not describe for "${key}".`);
-    }
+    //if (!this.hasUrl()) {
+    //  var key = this[local.key];
+    //  throw new Error(`Can not calculate url because destination name is not describe for "${key}".`);
+    //}
 
     var target = this.getRelativeTarget();
     var destName = this.getDestName();
 
-    return joinUrl('/', target, destName);
+    var url = null;
+    if (!destName) {
+      /**
+       * TODO: update getName method
+       */
+      var src = this.getSrc();
+
+      if (isArray(src)) {
+        url = [];
+
+        for (var resourcePath of src) {
+          var resourceUrl = joinUrl('/', target, getName(resourcePath));
+          url.push(resourceUrl);
+        }
+      } else {
+        url = joinUrl('/', target, getName(src));
+      }
+
+    } else{
+      url = joinUrl('/', target, destName);
+    }
+
+    return url;
   }
 
-  hasUrl() {
-    return this.hasDestName();
-  }
+  //hasUrl() {
+  //  return this.hasDestName();
+  //}
 
+  /**
+   * TODO: update getName method - should base on resource src
+   */
   getName() {
     var normalized = this[local.normalized];
     var names = null;
+
     if (normalized.originalArraySource) {
       names = normalized.names;
     } else {
