@@ -22,7 +22,8 @@ var local = {
 };
 
 export default class WebpackBuilder extends BaseBuilder {
-  createConfig() {
+  createConfig(customConfig) {
+    customConfig = customConfig || {};
     var src = this.config.src;
     var dest = this.config.dest;
 
@@ -44,7 +45,7 @@ export default class WebpackBuilder extends BaseBuilder {
     var loaders = loadersConverter.getConfig(this.config.loaders, experimental);
 
     var outputConverter = new OutputConverter(src, dest);
-    var output = outputConverter.getConfig();
+    var output = outputConverter.getConfig(customConfig.output);
 
     var resolveConverter = new ResolveConverter(src, dest);
     var resolve = resolveConverter.getConfig(this.config.alias, this.config.resolve);
@@ -110,17 +111,17 @@ export default class WebpackBuilder extends BaseBuilder {
     return Webpack(config);
   }
 
-  getConfig() {
+  getConfig(customConfig) {
     if (!this[local.processedConfig]) {
-      this[local.processedConfig] = this.createConfig();
+      this[local.processedConfig] = this.createConfig(customConfig);
     }
 
     return this[local.processedConfig];
   }
 
-  getWebpackInstance() {
+  getWebpackInstance(customConfig) {
     if (!this[local.instance]) {
-      var config = this.getConfig();
+      var config = this.getConfig(customConfig);
       this[local.instance] = Webpack(config);
     }
 
