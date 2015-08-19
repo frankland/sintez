@@ -23,6 +23,7 @@ var local = {
 
 export default class WebpackBuilder extends BaseBuilder {
   createConfig(customConfig) {
+    customConfig = customConfig || {};
     var src = this.config.src;
     var dest = this.config.dest;
 
