@@ -6,6 +6,7 @@ import WebpackLogPlugin from './plugins/webpack-log-plugin';
 import WebpackSplitByPathPlugin from './plugins/webpack-split-plugin';
 
 import CommonsChunkPlugin from 'webpack/lib/optimize/CommonsChunkPlugin';
+import ProvidePlugin from 'webpack/lib/ProvidePlugin';
 
 import BaseBuilder from '../base-builder';
 
@@ -86,6 +87,12 @@ export default class WebpackBuilder extends BaseBuilder {
       this.emit(event, params);
     });
     config.plugins.push(logPlugin);
+
+    var shim = this.config.shim;
+    if (shim) {
+      var providePlugin = new ProvidePlugin(shim);
+      config.plugins.push(providePlugin);
+    }
 
     var split = js.getOptions('split');
 

@@ -16,6 +16,7 @@ webpackLoaders.set('json', 'json-loader');
 webpackLoaders.set('jade', 'jade-loader');
 webpackLoaders.set('script', 'script-loader');
 webpackLoaders.set('expose', 'expose-loader');
+webpackLoaders.set('exports', 'exports-loader');
 
 function getLoaderMethodName(loader) {
 

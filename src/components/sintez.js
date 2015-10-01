@@ -207,6 +207,7 @@ export default class Sintez {
       devtool: this.get('devtool'),
 
       alias: this.get('alias'),
+      shim: this.get('shim'),
       resolve: this.get('resolve')
     };
 
