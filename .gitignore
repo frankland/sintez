@@ -6,11 +6,5 @@
 /test/test-resources/dest
 
 
-/assets
-/builders
-/components
-/resources
-/gulp-tasks
-/servers
-/utils
 /index.js
+/sintez.js
