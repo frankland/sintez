@@ -1,7 +1,7 @@
 import { resolve } from './utils/path';
 import { argv } from 'yargs';
 
-import Sintez from './components/sintez';
+import Sintez from './sintez';
 
 var configName = 'sintez';
 var cliName = argv['conf'];
@@ -12,4 +12,6 @@ if (cliName) {
 
 var configPath = resolve(`${configName}.yml`);
 
-export default Sintez.fromPath(configPath);
+//export default Sintez.fromPath(configPath);
+
+module.exports = Sintez.fromPath(configPath);

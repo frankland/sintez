@@ -1,0 +1,43 @@
+src: test/src/
+dest: test/dest/
+
+
+a:
+  b: 100500
+  c:
+    d:
+      - 1
+      - 2
+      - get:a.b
+      - get:js
+      - resource:js
+
+js:
+  src:
+    - angualr
+    - scripts/**/*.js
+    - components/**/*-component.js
+  dest: build.js
+
+tests:
+  js:
+    src: tests/**/*.js
+
+bar:
+  id: N*Y)G&*
+  baz: mutate(a.c.d).get()
+
+
+#js:
+#  b:
+#    - 1
+#    - get(a.c.d)
+#  app: mutate(resources)
+#  appScripts: mutate(resources).get(js)
+#  testScripts: mutate(resources->tests).get(js)
+
+
+
+
+
+

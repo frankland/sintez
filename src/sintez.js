@@ -1,313 +1,234 @@
-import '../utils/polyfills';
-
 import { load as JSONfromYml } from 'js-yaml';
 import { readFileSync, existsSync } from 'fs';
-import { resolve, join, dirname } from '../utils/path';
 
-import ObjectDescription from 'object-description';
+import { posix as path } from 'path';
 
-import getter from 'lodash/object/get';
-import merge from 'lodash/object/merge';
+import BaseStorage from 'base-storage';
+
+import isString from 'lodash/lang/isString';
+import isFunction from 'lodash/lang/isFunction';
 import isArray from 'lodash/lang/isArray';
 import isObject from 'lodash/lang/isObject';
-import cloneDeep from 'lodash/lang/cloneDeep';
-
-import Resources from './resoruces';
-import Builder from './builder';
-import Server from './server';
-import Mocha from './mocha';
 
 
-function getOrderedUrls(original, resources) {
-  var urls = [];
-  var originalResource = resources.get(original);
-  var order = originalResource.getOptions('order');
+const { join, dirname } = path;
 
-  if (order) {
-    for (var item of order) {
-      var url = null;
-      if (item[0] == '^') {
-        var dependency = item.slice(1);
-        var resource = resources.get(dependency);
-        url = resource.getUrl();
-      } else {
-        url = item;
-      }
+const normalizeConfig = (config) => {
+  return config;
+};
 
-      if (isArray(url)) {
-        urls = urls.concat(url);
-      } else {
-        urls.push(url);
-      }
-    }
-  } else {
-    urls = originalResource.getUrl();
+const loadYml = (configPath) => {
+  if (!existsSync(configPath)) {
+    throw new Error(`Sintez config "${configPath}" does not exist"`);
   }
 
-  return urls;
-}
+  let configYml = readFileSync(configPath);
 
+  let config = JSONfromYml(configYml);
+  let normalized = normalizeConfig(config);
 
-function getDefaults(src, dest) {
-  return ObjectDescription.create({
-    'src': src,
-    'dest': dest,
-    'experimental': false,
-    'source-maps': true,
-    'builder': 'webpack',
-    'debug': false,
-    'loaders.babel': [
-      join(src, '.+\.js$'),
-      resolve('tests', '.+\.js$')
-    ],
-    'loaders.yaml': [
-      join(src, '.+\.yml$')
-    ],
-    'loaders.html': [
-      join(src, '.+\.html$')
-    ],
-    'loaders.json': [
-      join(src, '.+\.json$')
-    ],
-    'loaders.jade': [
-      join(src, '.+\.jade')
-    ],
-    'target': 'web',
-    'devtool': 'eval',
-    'server': 'webpack',
-    'host': 'localhost',
-    'port': 9001,
-    'livereload': 35729
-  });
-}
+  if (normalized.include) {
+    let include = null;
 
-function normalizeConfig(config) {
-  var normalized = cloneDeep(config);
-  var loaders = normalized.loaders;
-  if (loaders) {
-    var normalizedLoaders = {};
-    for (var loader of Object.keys(loaders)) {
-      if (!isArray(loaders[loader])) {
-        normalizedLoaders[loader] = [loaders[loader]];
-      } else {
-        normalizedLoaders[loader] = loaders[loader];
-      }
+    if (isArray(normalized.include)) {
+      include = normalized.include;
+    } else {
+      include = [normalized.include];
     }
 
-    normalized.loaders = normalizedLoaders;
+    for (let dependecy of include) {
+      let currentDir = dirname(configPath);
+      let parentConfigPath = join(currentDir, dependecy);
+
+      let parentConfig = loadYml(parentConfigPath);
+      normalized = Object.assign({}, parentConfig, normalized, {
+        include: null
+      });
+    }
   }
 
   return normalized;
-}
-
-var local = {
-  config: Symbol('config'),
-  resources: Symbol('resources'),
-  builder: Symbol('builder'),
-  tests: Symbol('tests')
 };
 
-export default class Sintez {
-  constructor(config) {
-    var validation = this.validate(config);
+const getModuleMutatorName = (key) => `sintez-${key}`;
+const getMutatorConfigKey = (key) => `${key}`;
+const isValidMutatorKey = (key) => key && isString(key);
+const invalidMutatorKey = (key) => new Error(`Mutator key should be a String. at "${key}"`);
 
-    if (!validation.isValid) {
-      throw new Error(`Invalid sintez config. ${validation.errors.join(', ')}`);
-    }
 
-    var defaultConfig = getDefaults(config.src, config.dest);
-    this[local.config] = merge(defaultConfig, config);
+const parseArray = (raw, getter) => {
+  let parsed = [];
+
+  for (let id of raw) {
+    let value = parse(id, getter);
+
+    parsed.push(value);
   }
 
-  static loadYml(configPath) {
-    if (!existsSync(configPath)) {
-      throw new Error(`Sintez config "${configPath}" does not exist"`);
-    }
+  return parsed;
+};
 
-    var configYml = readFileSync(configPath);
+const parseObject = (raw, getter) => {
+  let parsed = {};
 
-    var config = JSONfromYml(configYml);
-    var normalized = normalizeConfig(config);
+  for (let id of Object.keys(raw)) {
+    let value = raw[id];
+    parsed[id] = parse(value, getter);
+  }
 
-    if (normalized.extend) {
-      var currentDir = dirname(configPath);
-      var parentConfigPath = join(currentDir, normalized.extend);
+  return parsed;
+};
 
-      var parentConfig = Sintez.loadYml(parentConfigPath);
 
-      normalized = merge(parentConfig, normalized);
-    }
+const isMagic = (raw) => /^[^\:]+\:.+/.test(raw);
 
-    return normalized;
+const getMutatorAndSection = (raw) => {
+  let [mutatorId, sectionId] = raw.split(':');
+
+  if (!sectionId) {
+    sectionId = mutatorId;
+    mutatorId = null;
+  }
+
+  return {
+    mutatorId,
+    sectionId
+  }
+};
+
+const parseTemplate = (raw, getter) => {
+  let parsed = null;
+
+  if (isMagic(raw)) {
+    parsed = getter(raw);
+  } else {
+    parsed = raw;
+  }
+
+  return parsed;
+};
+
+const parse = (raw, getter) => {
+  let parsed = null;
+
+  if (isArray(raw)) {
+    parsed = parseArray(raw, getter);
+  } else if (isObject(raw)) {
+    parsed = parseObject(raw, getter);
+  } else if (isString(raw)) {
+    parsed = parseTemplate(raw, getter);
+  } else {
+    parsed = raw;
+  }
+
+  return parsed;
+};
+
+// Private attributes
+let _mutators = Symbol('mutators');
+
+export default class Sintez extends BaseStorage {
+  constructor(config) {
+    super(config);
+
+    this[_mutators] = new Map();
   }
 
   static fromPath(configPath) {
-
-    var config = Sintez.loadYml(configPath);
-
+    let config = loadYml(configPath);
     return new Sintez(config);
   }
 
-  validate(config) {
-    var errors = [];
-    if (!config.src) {
-      errors.push('"src" is not defined');
+  addMutator(id, mutator) {
+    this[_mutators].set(id, mutator);
+  }
+
+  // -----
+
+  hasMutator(key) {
+    return this.hasRegisteredMutator(key) || this.hasModuleMutator(key);
+  }
+
+  getMutator(key) {
+    let transformer = null;
+
+    if (this.hasRegisteredMutator(key)) {
+      transformer = this.getRegisteredMutator(key);
+    } else if (this.hasModuleMutator(key)) {
+      transformer = this.getModuleMutator(key);
+    } else {
+      let moduleName = getModuleMutatorName(key);
+      throw new Error(`Can not find mutator "${key}". try "npm install --save ${moduleName}"`);
     }
 
-    if (!config.dest) {
-      errors.push('"dest" is not defined');
+    return transformer;
+  }
+
+  // ----
+
+  getRegisteredMutator(key) {
+    return this[_mutators].get(key);
+  }
+
+  hasRegisteredMutator(key) {
+    return this[_mutators].has(key);
+  }
+
+  // ----
+
+  getModuleMutator() {
+    let path = getModuleMutatorName(key);
+    return require(path);
+  }
+
+  hasModuleMutator(key) {
+    let sintezModuleMutatorName = getModuleMutatorName(key);
+
+    let existsAsModule = false;
+    try {
+      require.resolve(sintezModuleMutatorName);
+      existsAsModule = true;
+    } catch (error) {
     }
 
-    return {
-      isValid: !errors.length,
-      errors: errors
-    }
+    return existsAsModule;
   }
 
-  getConfig() {
-    return this[local.config];
+  // -----
+
+  set() {
+    throw new Error('"set" is not allowed');
   }
 
-  addResource(key, resource) {
+  get(id) {
+    let {mutatorId, sectionId} = getMutatorAndSection(id);
 
-  }
-
-  createResources(customOptions = {}) {
-    var src = this.getSrc();
-    var dest = this.getDest();
-    var resourcesConfig = this.get('resources');
-
-    var config = Object.assign({} , resourcesConfig, customOptions);
-    return new Resources(src, dest, config);
-  }
-
-  getResources() {
-    if (!this[local.resources]) {
-      this[local.resources] =  this.createResources();
+    let mutator = null;
+    if (mutatorId && mutatorId  != 'get') {
+      mutator = this.getMutator(mutatorId);
     }
 
-    return this[local.resources];
-  }
+    let raw = super.get(sectionId);
+    let parsed = parse(raw, ::this.get);
 
-  createBuilder(customOptions = {}) {
-    var resources = this.getResources();
-    var js = resources.get('js');
-
-    var configOptions = {
-      builder: this.get('builder'),
-      src: this.getSrc(),
-      dest: this.getDest(),
-      experimental: this.get('experimental'),
-      js,
-      //output: js.getOriginalDest(),
-      //entry: js.getOriginalSrc(),
-      debug: this.get('debug'),
-      loaders: this.get('loaders'),
-
-      devtool: this.get('devtool'),
-
-      alias: this.get('alias'),
-      shim: this.get('shim'),
-      resolve: this.get('resolve')
-    };
-
-    var options = Object.assign({}, configOptions, customOptions);
-
-    return new Builder(options);
-  }
-
-  getBuilder() {
-    if (!this[local.builder]) {
-      this[local.builder] = this.createBuilder();
+    if (mutator) {
+      parsed = mutator(sectionId, parsed, {
+        src: this.getSrc(),
+        dest: this.getDest()
+      });
     }
 
-    return this[local.builder];
+    return parsed;
   }
 
-  createServer(customOptions = {}) {
-    var resources = this.getResources();
-    var index = resources.get('index');
-
-    var configOptions = {
-      builder: this.getBuilder(),
-      server: this.get('server'),
-
-      src: this.getSrc(),
-      dest: this.getDest(),
-
-      host: this.get('host'),
-      port: this.get('port'),
-
-      index: index.getDest()
-    };
-
-    var options = Object.assign({}, configOptions, customOptions);
-
-    return new Server(options);
-  }
-
-  getServer() {
-    if (!this[local.server]) {
-      this[local.server] = this.createServer();
-    }
-
-    return this[local.server];
-  }
-
-  getTests() {
-    if (!this[local.tests]) {
-      var resources = this.getResources();
-      var tests = resources.get('tests');
-
-      var src = this.getSrc();
-      var dest = this.getDest();
-
-      this[local.tests] = new Mocha(src, dest, tests);
-    }
-
-    return this[local.tests];
-  }
-
-  // --------------------------------
-
-  get(key) {
-    return getter(this[local.config], key);
-  }
-
-  has(key) {
-    return !!this.get(key);
-  }
+  // -----
 
   getDest() {
-    return this.get('dest');
+    return super.get('dest');
   }
 
   getSrc() {
-    return this.get('src');
-  }
-
-  // ------------ OUTPUT --------------
-
-  getOutputScripts() {
-    var resources = this.getResources();
-    var output = null;
-
-    if (resources.has('js')) {
-      output = getOrderedUrls('js', resources);
-    }
-
-
-    return isArray(output) ? output : [output];
-  }
-
-  getOutputStyles() {
-    var resources = this.getResources();
-    var output = null;
-
-    if (resources.has('css')) {
-      output = getOrderedUrls('css', resources);
-    }
-
-    return isArray(output) ? output : [output];
+    return super.get('src');
   }
 }
+

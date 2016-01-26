@@ -1,11 +1,14 @@
 //import log from '../src/components/log';
 //log.disable();
 
-import './components/sintez';
-import './components/resources';
+import './sintez';
+//import './resources';
+import './mutators';
 
-import './builders/webpack/webpack-builder';
-import './builders/webpack/build';
+//import './components/resources';
+//
+//import './builders/webpack/webpack-builder';
+//import './builders/webpack/build';
 
 //import config from './config';
 //
