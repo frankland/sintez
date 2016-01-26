@@ -1,9 +1,9 @@
 //import log from '../src/components/log';
 //log.disable();
 
-import './sintez';
+//import './sintez';
 //import './resources';
-import './mutators';
+//import './mutators';
 
 //import './components/resources';
 //
