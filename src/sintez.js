@@ -55,7 +55,7 @@ const loadYml = (configPath) => {
       }
     }
   } else {
-    warnings.push(`Sintez config "${chalk.underline(configPath)}" ${chalk.red.bold('DOES NOT EXIST. Will be ignored')}`);
+    warnings.push(`Sintez config "${chalk.cyan(configPath)}" ${chalk.red.bold('DOES NOT EXIST. Will be ignored')}`);
   }
 
   return {
