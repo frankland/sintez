@@ -1,7 +1,0 @@
-extends: a.yml
-
-dest: test/dest-b/
-
-foo:
-  bar1:
-    baz: 1
