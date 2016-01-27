@@ -34,8 +34,8 @@
     "babel-preset-stage-0": "^6.3.13",
     "base-storage": "0.0.2",
     "expect.js": "^0.3.1",
-    "js-yaml": "^3.3.1",
-    "lodash": "^3.9.3",
-    "yargs": "^3.10.0"
+    "js-yaml": "^3.5.2",
+    "lodash": "^4.0.1",
+    "yargs": "^3.32.0"
   }
 }
