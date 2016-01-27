@@ -2,8 +2,10 @@ import { load as JSONfromYml } from 'js-yaml';
 import { readFileSync, existsSync } from 'fs';
 
 import { posix as path } from 'path';
+import chalk from 'chalk';
 
 import BaseStorage from 'base-storage';
+
 
 import isString from 'lodash/isString';
 import isFunction from 'lodash/isFunction';
@@ -20,36 +22,46 @@ const normalizeConfig = (config) => {
 };
 
 const loadYml = (configPath) => {
-  if (!existsSync(configPath)) {
-    throw new Error(`Sintez config "${configPath}" does not exist"`);
+  let normalized = {};
+  let warnings = [];
+
+  if (existsSync(configPath)) {
+
+    let configYml = readFileSync(configPath);
+
+    let config = JSONfromYml(configYml);
+    normalized = normalizeConfig(config);
+
+    if (normalized.include) {
+      let include = null;
+
+      if (isArray(normalized.include)) {
+        include = normalized.include;
+      } else {
+        include = [normalized.include];
+      }
+
+      for (let dependency of include) {
+        let currentDir = dirname(configPath);
+        let parentConfigPath = join(currentDir, dependency);
+
+        let included = loadYml(parentConfigPath);
+
+        normalized = Object.assign({}, included.config, normalized, {
+          include: null
+        });
+
+        warnings = warnings.concat(included.warnings);
+      }
+    }
+  } else {
+    warnings.push(`Sintez config "${chalk.underline(configPath)}" ${chalk.red.bold('DOES NOT EXIST. Will be ignored')}`);
   }
 
-  let configYml = readFileSync(configPath);
-
-  let config = JSONfromYml(configYml);
-  let normalized = normalizeConfig(config);
-
-  if (normalized.include) {
-    let include = null;
-
-    if (isArray(normalized.include)) {
-      include = normalized.include;
-    } else {
-      include = [normalized.include];
-    }
-
-    for (let dependecy of include) {
-      let currentDir = dirname(configPath);
-      let parentConfigPath = join(currentDir, dependecy);
-
-      let parentConfig = loadYml(parentConfigPath);
-      normalized = Object.assign({}, parentConfig, normalized, {
-        include: null
-      });
-    }
-  }
-
-  return normalized;
+  return {
+    config: normalized,
+    warnings
+  };
 };
 
 const getModuleMutatorName = (key) => `sintez-${key}`;
@@ -139,7 +151,17 @@ export default class Sintez extends BaseStorage {
   }
 
   static fromPath(configPath) {
-    let config = loadYml(configPath);
+    let {config, warnings} = loadYml(configPath);
+
+    if (warnings.length) {
+      console.log('Sintez warnings:');
+      for (let warning of warnings) {
+        console.log(` - ${warning}`);
+      }
+
+      console.log('');
+    }
+
     return new Sintez(config);
   }
 
