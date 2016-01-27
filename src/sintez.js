@@ -5,10 +5,12 @@ import { posix as path } from 'path';
 
 import BaseStorage from 'base-storage';
 
-import isString from 'lodash/lang/isString';
-import isFunction from 'lodash/lang/isFunction';
-import isArray from 'lodash/lang/isArray';
-import isObject from 'lodash/lang/isObject';
+import isString from 'lodash/isString';
+import isFunction from 'lodash/isFunction';
+import isArray from 'lodash/isArray';
+import isObject from 'lodash/isObject';
+import isRegexp from 'lodash/isRegexp';
+import isDate from 'lodash/isDate';
 
 
 const { join, dirname } = path;
@@ -111,7 +113,9 @@ const parseTemplate = (raw, getter) => {
 const parse = (raw, getter) => {
   let parsed = null;
 
-  if (isArray(raw)) {
+  if (isRegexp(raw) || isDate(raw)) {
+    parsed = raw;
+  } else if (isArray(raw)) {
     parsed = parseArray(raw, getter);
   } else if (isObject(raw)) {
     parsed = parseObject(raw, getter);
