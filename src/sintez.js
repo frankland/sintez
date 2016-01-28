@@ -1,7 +1,7 @@
 import { load as JSONfromYml } from 'js-yaml';
 import { readFileSync, existsSync } from 'fs';
 
-import { posix as path } from 'path';
+import path from 'path';
 
 import { argv } from 'yargs';
 
@@ -9,7 +9,6 @@ import chalk from 'chalk';
 import prettyJson from 'prettyjson';
 
 import BaseStorage from 'base-storage';
-
 
 import isString from 'lodash/isString';
 import isFunction from 'lodash/isFunction';
