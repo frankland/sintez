@@ -2,7 +2,11 @@ import { load as JSONfromYml } from 'js-yaml';
 import { readFileSync, existsSync } from 'fs';
 
 import { posix as path } from 'path';
+
+import { argv } from 'yargs';
+
 import chalk from 'chalk';
+import prettyJson from 'prettyjson';
 
 import BaseStorage from 'base-storage';
 
@@ -24,8 +28,10 @@ const normalizeConfig = (config) => {
 const loadYml = (configPath) => {
   let normalized = {};
   let warnings = [];
+  let includes = [];
 
   if (existsSync(configPath)) {
+    includes.push(configPath);
 
     let configYml = readFileSync(configPath);
 
@@ -52,6 +58,7 @@ const loadYml = (configPath) => {
         });
 
         warnings = warnings.concat(included.warnings);
+        includes = includes.concat(included.includes);
       }
     }
   } else {
@@ -60,7 +67,8 @@ const loadYml = (configPath) => {
 
   return {
     config: normalized,
-    warnings
+    warnings,
+    includes
   };
 };
 
@@ -143,15 +151,15 @@ const parse = (raw, getter) => {
 // Private attributes
 let _mutators = Symbol('mutators');
 
-export default class Sintez extends BaseStorage {
+// workarond commonJs
+module.exports = class Sintez extends BaseStorage {
   constructor(config) {
     super(config);
-
     this[_mutators] = new Map();
   }
 
   static fromPath(configPath) {
-    let {config, warnings} = loadYml(configPath);
+    let {config, warnings, includes} = loadYml(configPath);
 
     if (warnings.length) {
       console.log('Sintez warnings:');
@@ -160,6 +168,17 @@ export default class Sintez extends BaseStorage {
       }
 
       console.log('');
+    }
+
+    if (includes.length) {
+      console.log('Sintez was configured using configs:');
+      for (let path of includes) {
+        console.log(` - ${path}`);
+      }
+
+      console.log('');
+    } else {
+      throw new Error('Can not configure Sintez. There are no existing configs files');
     }
 
     return new Sintez(config);
@@ -256,5 +275,55 @@ export default class Sintez extends BaseStorage {
   getSrc() {
     return super.get('src');
   }
-}
+
+  // ----
+
+  raw(path) {
+    let key = null;
+
+    if (path) {
+      key = path;
+    } else {
+      key = argv.key;
+    }
+
+    let config = null;
+
+    if (key) {
+      config = super.get(key);
+    } else {
+      config = super.get();
+    }
+
+    let pretty = prettyJson.render(config);
+
+    console.log('');
+    console.log(pretty);
+    console.log('');
+  }
+
+  render(path) {
+    let key = null;
+
+    if (path) {
+      key = path;
+    } else {
+      key = argv.key;
+    }
+
+    let config = null;
+
+    if (key) {
+      config = this.get(key);
+    } else {
+      config = this.raw();
+    }
+
+    let pretty = prettyJson.render(config);
+
+    console.log('');
+    console.log(pretty);
+    console.log('');
+  }
+};
 
