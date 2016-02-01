@@ -101,19 +101,15 @@ const parseObject = (raw, getter) => {
 };
 
 
-const isMagic = (raw) => /^[^\:]+\:.+/.test(raw);
+const isMagic = (raw) => /^([^\~]+\~)+/.test(raw);
 
-const getMutatorAndSection = (raw) => {
-  let [mutatorId, sectionId] = raw.split(':');
-
-  if (!sectionId) {
-    sectionId = mutatorId;
-    mutatorId = null;
-  }
+const getMutatorsAndSection = (raw) => {
+  let mutatorIds = raw.split('~');
+  let sectionId = mutatorIds.pop();
 
   return {
-    mutatorId,
-    sectionId
+    mutatorIds: mutatorIds.map(mutatorId => mutatorId.trim()).reverse(),
+    sectionId: sectionId.trim()
   }
 };
 
@@ -245,21 +241,30 @@ module.exports = class Sintez extends BaseStorage {
   }
 
   get(id) {
-    let {mutatorId, sectionId} = getMutatorAndSection(id);
+    let {mutatorIds, sectionId} = getMutatorsAndSection(id);
 
-    let mutator = null;
-    if (mutatorId && mutatorId  != 'get') {
-      mutator = this.getMutator(mutatorId);
-    }
+    //let mutators = null;
+    //if (mutatorId && mutatorId  != 'get') {
+    //  mutator = this.getMutator(mutatorId);
+    //}
+
+    //console.log(id, mutatorIds);
 
     let raw = super.get(sectionId);
     let parsed = parse(raw, ::this.get);
 
-    if (mutator) {
-      parsed = mutator(sectionId, parsed, {
-        src: this.getSrc(),
-        dest: this.getDest()
-      });
+    if (mutatorIds.length) {
+      for (let mutatorId of mutatorIds) {
+
+        if (mutatorId != 'get') {
+          let mutator = this.getMutator(mutatorId);
+
+          parsed = mutator(sectionId, parsed, {
+            src: this.getSrc(),
+            dest: this.getDest()
+          });
+        }
+      }
     }
 
     return parsed;
