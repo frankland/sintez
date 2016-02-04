@@ -259,10 +259,13 @@ module.exports = class Sintez extends BaseStorage {
         if (mutatorId != 'get') {
           let mutator = this.getMutator(mutatorId);
 
-          parsed = mutator(sectionId, parsed, {
+          let mutatorConfig = this.get(`${mutatorId}-mutator`, {});
+          let advancedConfig = Object.assign({
             src: this.getSrc(),
             dest: this.getDest()
-          });
+          }, mutatorConfig);
+
+          parsed = mutator(sectionId, parsed, advancedConfig);
         }
       }
     }
