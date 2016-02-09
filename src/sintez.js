@@ -14,7 +14,7 @@ import isString from 'lodash/isString';
 import isFunction from 'lodash/isFunction';
 import isArray from 'lodash/isArray';
 import isObject from 'lodash/isObject';
-import isRegexp from 'lodash/isRegexp';
+import isRegexp from 'lodash/isRegExp';
 import isDate from 'lodash/isDate';
 
 
