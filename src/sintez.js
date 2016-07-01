@@ -216,7 +216,7 @@ module.exports = class Sintez extends BaseStorage {
 
   // ----
 
-  getModuleMutator() {
+  getModuleMutator(key) {
     let path = getModuleMutatorName(key);
     return require(path);
   }
